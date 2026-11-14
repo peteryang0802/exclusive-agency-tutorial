@@ -50,10 +50,9 @@
   <h2>直播的人，和天猫京东不一样</h2>
   <p class="subtle">天猫京东是货架生意，靠投流、页面，不用人实时盯；直播是「人带货」，GMV 靠时长，时长一拉长，主播、中控就得排班，人不能停。</p>
   <div class="card widget">
-    <div class="line-list">
-      <div class="ll-row"><div class="ll-name">抖音团队基础班底（主播 / 中控 / 运营 / 内容）</div><div class="ll-val c-blue">6</div><div class="ll-u">人起</div></div>
-      <div class="ll-row"><div class="ll-name">起量后，按抖音规模每 450 万加 1 人</div><div class="ll-val c-blue" id="dy-rule">—</div><div class="ll-u">人</div></div>
-      <div class="ll-row"><div class="ll-name">各年抖音团队（2028 → 2031）</div><div class="ll-val c-blue">7 / 8 / 9 / 10</div><div class="ll-u">人</div></div>
+    <p class="subtle" style="margin:0 0 10px;">规则先说清：做抖音得先搭一个 <strong>6 人基础班底</strong>（主播 / 中控 / 运营 / 内容），起量后每多 450 万抖音规模，再加 1 人。第一年（2027）没做抖音，所以这一行全是 0。</p>
+    <div class="table-scroll">
+      <table class="ratio-table dy-table" id="dy-table"></table>
     </div>
     <p class="subtle" style="margin-top:8px;">直播时长往上加，排班的人就得跟着加，这是刚性成本，省不掉。所以直播占比越高，人力越压不下来。</p>
   </div>
@@ -196,8 +195,17 @@
     document.getElementById('m-comm').textContent = CalcModel.fmtWan(r.commission);
     document.getElementById('m-np').textContent = CalcModel.fmtWan(r.netProfit);
     document.getElementById('m-np').className = 'v ' + (r.netProfit >= 0 ? 'c-green' : 'c-red');
-    // 直播规模增量（第一年抖音为 0，展示 0；起量后按规则）
-    document.getElementById('dy-rule').textContent = r.hcDouyin;
+    // 抖音团队 5 年明细表（动态渲染，不写死）
+    var MY = CalcModel.computeMultiYear();
+    var dhtml = '<thead><tr><th>年份</th><th>抖音规模(万)</th><th>基础班底</th><th>规模增量</th><th>总人数</th></tr></thead><tbody>';
+    MY.years.forEach(function (y) {
+      var base = y.douyinTaxIncl > 0 ? 6 : 0;
+      var extra = y.hcDouyin - base;
+      dhtml += '<tr><td>' + y.p.year + '</td><td>' + CalcModel.fmtWan(y.douyinTaxIncl) +
+        '</td><td>' + base + '</td><td>' + extra + '</td><td class="c-blue"><strong>' + y.hcDouyin + '</strong></td></tr>';
+    });
+    dhtml += '</tbody>';
+    document.getElementById('dy-table').innerHTML = dhtml;
     // 真实细分岗位人力
     var rs = CalcModel.realStaff(r);
     document.getElementById('w-realstaff').textContent = CalcModel.fmtWan(rs.realStaffCost, 0);

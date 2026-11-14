@@ -83,10 +83,6 @@
       </div>
     </div>
     <p class="subtle" style="margin-top:8px;">综合到岸率 = <strong class="c-orange">0</strong>，所以现金采购就等于品牌货款 <strong id="lw-buy">—</strong> 万，没有额外到岸钱。</p>
-    <div class="note" style="margin-top:10px;">
-      <p style="margin:0 0 6px;"><strong>入关不是什么都不交：</strong>海关按品牌货款代征 <strong>13% 增值税</strong>（约 <strong id="lw-iv">—</strong> 万），但这是价外税、能拿进项发票抵扣，不进成本，也不是费用。</p>
-      <p style="margin:0;"><strong>那 1% 货品损耗（约 <strong id="lw-waste">—</strong> 万）是另一回事：</strong>它是退回来的破损货、展示样衣的货值核销，跟到岸费用不重复，直接减库存、计费用。</p>
-    </div>
   </div>
 
   <h2>含税视角：一件货，怎么定出两个价</h2>
@@ -183,8 +179,6 @@
     document.getElementById('m-buy').textContent = CalcModel.fmtWan(r.purchaseInclLanding);
     document.getElementById('m-inv').textContent = CalcModel.fmtWan(r.inventory);
     document.getElementById('lw-buy').textContent = CalcModel.fmtWan(r.purchaseInclLanding, 0);
-    document.getElementById('lw-iv').textContent = CalcModel.fmtWan(r.importVat, 0);
-    document.getElementById('lw-waste').textContent = CalcModel.fmtWan(r.wastage, 0);
 
     // 含税价格体系（以一件不含税 100 为基准，数字随引擎参数走）
     var base = 100;
