@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>独家代理 · 业务分析入门</title>
 <link rel="stylesheet" href="css/style.css">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body>
+<noscript><div style="padding:20px;margin:16px;border:1px solid #d92c2c;border-radius:10px;background:#fff5f5;color:#d92c2c;font-weight:700;">本网站的交互和数字要靠 JavaScript 才能显示，请在浏览器设置里打开 JavaScript 后再看。</div></noscript>
 
 <div class="topbar">
   <div class="topbar-inner">
@@ -31,8 +33,10 @@
       <li><strong>零关税</strong>，入关只代征 13% 增值税（不进成本、可抵扣）</li>
       <li><strong>零国际运费、零国内运费</strong></li>
       <li><strong>零清关服务费</strong></li>
+      <li><strong>全程按人民币结算、零汇兑损益</strong>（没算汇率波动）</li>
+      <li><strong>不考虑海外价差和海淘分流</strong>（没算平行进口）</li>
     </ul>
-    <p class="assume-note">真实业务里，关税、运费、清关费、货品损耗样样要花钱，情况更复杂、数字只会更差。先看最理想都这么难，才知道做业务不容易。</p>
+    <p class="assume-note">真实业务里，关税、运费、清关费、货品损耗、汇率波动、海外价差样样要花钱或会分流，情况更复杂、数字只会更差。先看最理想都这么难，才知道做业务不容易。</p>
   </div>
 
   <!-- 结局钩子：三个大数字，由引擎实时算（最理想口径） -->
@@ -58,7 +62,7 @@
 
   <div class="warn">
     <span class="lbl">这还是把人力算便宜了</span>
-    <p>上面的利润、现金，用的是<strong>混合工资 21.6 万/人</strong>的简化口径。按有市场竞争力的细分岗位薪酬，第一年净利润 <strong>-161.3 万</strong>、净现金流 <strong>-955.4 万</strong>，只会更难看。</p>
+    <p>上面的利润、现金，用的是<strong>混合工资 21.6 万/人</strong>的简化口径。按有市场竞争力的细分岗位薪酬，第一年净利润 <strong id="h-realnp">—</strong> 万、净现金流 <strong id="h-realnc">—</strong> 万，只会更难看。</p>
   </div>
 
   <div class="insight">
@@ -66,8 +70,8 @@
     <p>卖了 <strong>2000 万</strong>，账面反而亏 <strong>62.1 万</strong>，第一年就不赚钱；账上的盈亏，和兜里的现金，<strong>完全不是一回事</strong>（亏 62 万，现金却少 856 万）；业务要往前走，得先<strong>垫一大笔钱</strong>。这门课，就是把这三件事讲明白。</p>
   </div>
 
-  <h2>七个片段，碎片时间各刷一段</h2>
-  <p class="subtle">前 6 段只看第一年，把每一块摸清楚；第 7 段，看 5 年滚下去会怎样。</p>
+  <h2>七件事，碎片时间各刷一段</h2>
+  <p class="subtle">前 6 件事只看第一年，把每一块摸清楚；第 7 件事，看 5 年滚下去会怎样。</p>
 
   <ol class="toc" style="list-style:none;padding:0;">
     <li><a href="chapters/1-goal.html" data-ch="1">
@@ -83,7 +87,7 @@
     <li><a href="chapters/3-goods.html" data-ch="3">
       <div class="num">3</div>
       <div class="body"><div class="ttl">货 · 备多少、压多少库存</div>
-      <div class="desc">零关税运费、售罄、损耗，都是简化假设。</div></div>
+      <div class="desc">零关税、零运费、售罄、损耗，都是简化假设。</div></div>
     </a></li>
     <li><a href="chapters/4-traffic.html" data-ch="4">
       <div class="num">4</div>
@@ -122,6 +126,9 @@
   document.getElementById('h-np').textContent = CalcModel.fmtWan(r.netProfit);
   document.getElementById('h-np').className = 'hv ' + (r.netProfit >= 0 ? 'c-green' : 'c-red');
   document.getElementById('h-nc').textContent = CalcModel.fmtWan(r.netCash);
+  var rs = CalcModel.realStaff(r);
+  document.getElementById('h-realnp').textContent = CalcModel.fmtWan(rs.realNetProfit);
+  document.getElementById('h-realnc').textContent = CalcModel.fmtWan(rs.realNetCash);
 })();
 </script>
 </body>

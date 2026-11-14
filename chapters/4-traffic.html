@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>第4件事 · 流量成本</title>
 <link rel="stylesheet" href="../css/style.css">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
 </head>
 <body>
+<noscript><div style="padding:20px;margin:16px;border:1px solid #d92c2c;border-radius:10px;background:#fff5f5;color:#d92c2c;font-weight:700;">本网站的交互和数字要靠 JavaScript 才能显示，请在浏览器设置里打开 JavaScript 后再看。</div></noscript>
 
 <div class="topbar">
   <div class="topbar-inner">
@@ -39,12 +41,12 @@
 
   <div class="card widget">
     <div class="slider-row">
-      <label>品牌推广费率（×全收入）</label>
+      <label for="pr">品牌推广费率（×全收入）</label>
       <input type="range" id="pr" min="5" max="25" step="1" value="15">
       <span class="val" id="pr-val">15%</span>
     </div>
     <div class="slider-row">
-      <label>线上投流费率（×线上收入）</label>
+      <label for="ar">线上投流费率（×线上收入）</label>
       <input type="range" id="ar" min="10" max="30" step="1" value="20">
       <span class="val" id="ar-val">20%</span>
     </div>
@@ -84,12 +86,18 @@
   </div>
 
   <div class="note">
-    <strong>为了简化，费率假设未来 5 年都按这个比例。</strong>真实里不同年份、不同平台的打法会变，费率会上下浮动；这里先固定一个数，把「流量很贵」这件事想明白。默认第一年推广 15%、投流 20%，稳态后才降到 10%、15%。
+    <strong>为了简化，费率假设未来 5 年都按这个比例。</strong>默认第一年推广 15%、投流 20%，稳态后才降到 10%、15%。
+    要提醒一句：这是偏乐观的取法。真实平台流量成本往往<strong>逐年涨</strong>，红利在退，不会因为你品牌做成熟就自动变便宜；稳态那两个更低的费率，只是让你看个下限，别当成“以后会更省”。真实这笔钱，大概率比这里更贵。
   </div>
 
   <div class="warn">
     <span class="lbl">这些成本，模型里没算</span>
     <p>线下商场的扣点，本质是商场帮你引流的成本；分销开店还要大量装修、支持费用。这些都先忽略，所以真实的流量成本只会更高。</p>
+  </div>
+
+  <div class="risk-box">
+    <h2>这么投，会有哪些风险</h2>
+    <div class="risk-list" id="risk-list">—</div>
   </div>
 
   <div class="problem">
@@ -117,8 +125,10 @@
   var stableEl = document.getElementById('stable');
 
   function wfRow(cls, label, val, max) {
-    var w = Math.max(2, val / max * 100);
-    return '<div class="wf-row ' + cls + '">' +
+    var pct = val / max * 100;
+    var w = Math.min(100, Math.abs(pct));
+    var neg = val < 0;
+    return '<div class="wf-row ' + cls + (neg ? ' wf-neg' : '') + '">' +
       '<div class="wf-label">' + label + '</div>' +
       '<div class="wf-track"><span class="wf-bar" style="width:' + w.toFixed(1) + '%"></span></div>' +
       '<div class="wf-num">' + CalcModel.fmtWan(val) + '</div></div>';
@@ -138,7 +148,7 @@
     document.getElementById('pr-val').textContent = (promoRate * 100).toFixed(0) + '%';
     document.getElementById('ar-val').textContent = (adRate * 100).toFixed(0) + '%';
 
-    var r = CalcModel.compute({ revenue: 2000, promoRate: promoRate, adRate: adRate });
+    var r = CalcModel.compute({ revenue: CalcModel.SharedState.getRevenue(2000), promoRate: promoRate, adRate: adRate });
 
     // 结论卡 + 数字卡
     document.getElementById('c-flow').textContent = CalcModel.fmtWan(r.promo + r.ad);
@@ -166,6 +176,14 @@
     document.getElementById('ol-wh').textContent = CalcModel.fmtWan(r.warehouseFulfill);
     document.getElementById('ol-other').textContent = CalcModel.fmtWan(r.otherOnline);
     document.getElementById('ol-sum').textContent = CalcModel.fmtWan(r.onlineOpex);
+
+    // 风险预警（实时随投放口径）
+    var rh = '';
+    CalcModel.assessRisk(r).forEach(function (k) {
+      rh += '<div class="risk-item is-' + k.level + '"><span class="ri-title">' + k.title +
+        '</span><p class="ri-text">' + k.text + '</p></div>';
+    });
+    document.getElementById('risk-list').innerHTML = rh;
   }
 
   prEl.addEventListener('input', render);

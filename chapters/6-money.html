@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>第6件事 · 现金流</title>
 <link rel="stylesheet" href="../css/style.css">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
 </head>
 <body>
+<noscript><div style="padding:20px;margin:16px;border:1px solid #d92c2c;border-radius:10px;background:#fff5f5;color:#d92c2c;font-weight:700;">本网站的交互和数字要靠 JavaScript 才能显示，请在浏览器设置里打开 JavaScript 后再看。</div></noscript>
 
 <div class="topbar">
   <div class="topbar-inner">
@@ -25,16 +27,45 @@
   <div class="concl">
     <span class="concl-tag">第一年 · 结论先行</span>
     <div><span class="concl-big c-red" id="c-gap">—</span><span class="concl-unit">万 · 最紧的资金缺口</span></div>
-    <div class="concl-sub">出现在 3—8 月付完货款那一刻。账上没钱，就得临时融资，第一年累计要补 <strong id="c-fund">—</strong> 万。</div>
+    <div class="concl-sub">出现在 3—8 月付完货款那一刻。账上没钱，就得临时融资。下面这个 <strong id="c-fund">—</strong> 万，是<strong>把三个时段每次借的本金加起来的周转总额</strong>（中途借了又还、还了又借，会重复计数）；它不是你最终要欠的钱。</div>
+  </div>
+
+  <div class="note">
+    <span class="lbl">三个“要补多少钱”，别搞混</span>
+    <div class="line-list">
+      <p><strong class="c-blue" id="k-turn">—</strong> 万：全年分时段的<strong>周转借款总额</strong>，借了又还会重复算，看的是资金进出有多频繁。</p>
+      <p><strong class="c-red" id="k-need">—</strong> 万：按<strong>年度口径</strong>算的资金需求（兜里现金缺口），这是你要提前备好的额度，后面几年会涨到 4000 多万。</p>
+      <p><strong class="c-blue" id="k-debt">—</strong> 万：第一年<strong>年末实际还欠着</strong>的借款（还掉一部分后的余额），这才是跨年要背的债。</p>
+    </div>
   </div>
 
   <p>利润是按全年算的，但钱是<strong>一笔一笔进出</strong>的。货款要提前付、回款要等卖完，中间很容易出现一个大窟窿。</p>
+
+  <h2>全年资金时间轴：先紧后松</h2>
+  <div class="card widget">
+    <div class="timeline">
+      <div class="tl-seg is-tight" style="flex:2;">
+        <div class="ts-range">1—2 月</div>
+        <div class="ts-event">先付货款，没回款</div>
+      </div>
+      <div class="tl-seg is-mid" style="flex:6;">
+        <div class="ts-range">3—8 月</div>
+        <div class="ts-event">SS 季边卖边回款，仍要补钱</div>
+      </div>
+      <div class="tl-seg is-loose" style="flex:4;">
+        <div class="ts-range">9—12 月</div>
+        <div class="ts-event">FW 回款进来，开始还债</div>
+      </div>
+    </div>
+    <p class="subtle" style="margin:10px 0 0;">颜色越红越紧。头两段都在借钱，最后一段回款多了才松下来、还存量借款。</p>
+  </div>
 
   <h2>点三个时段，看钱怎么断、又怎么补上</h2>
   <div class="card widget">
     <div class="tl-cards" id="tl"></div>
     <div class="tl-detail" id="detail"></div>
-    <p class="subtle" style="margin-top:10px;">规则：现金一旦跌破 <strong>100 万安全线</strong>，就自动融资补回到 100 万。所以每段期末都至少留 100 万，不会真的变成负数——但那笔借来的钱，是要还的。</p>
+    <p class="subtle" style="margin-top:10px;">规则：现金一旦跌破 <strong>100 万安全线</strong>，就即时融资补回到 100 万；等后面回款进来、现金超过 100 万，多出来的钱先还之前的借款。所以每段期末都至少留 100 万，不会真的变成负数。注意这只是模型里的简化：真实融资要额度、抵押、利息，还得借得到，不是点一下就来的。</p>
+    <p class="subtle" style="margin-top:8px;"><strong>为什么 1—2 月回款是 0？</strong>第一年生意刚开张，货还没卖出去，自然没有钱进来；可这时候品牌货款得先付，所以这一段最紧、要融的钱最多。等 3 月以后 SS 季开始卖，回款才一笔笔进来。</p>
   </div>
 
   <h2>账面利润 ≠ 兜里的现金</h2>
@@ -51,7 +82,12 @@
 
   <div class="warn">
     <span class="lbl">借来的钱，还要付利息</span>
-    <p>模型只展示了要补多少本金，没算融资利息。按 5% 年息粗估，随融资额从 956 涨到 4160 万，每年利息从 48 万涨到 208 万。这笔钱是真实的现金流出，加进来利润和现金只会更差。</p>
+    <p>模型只展示了要补多少本金，没算融资利息。按 5% 年息粗估，年度口径的资金需求从 956 涨到 4160 万，对应每年利息从 48 万涨到 208 万。这笔钱是真实的现金流出，加进来利润和现金只会更差。</p>
+  </div>
+
+  <div class="risk-box">
+    <h2>钱这一关，会有哪些风险</h2>
+    <div class="risk-list" id="risk-list">—</div>
   </div>
 
   <div class="problem">
@@ -74,12 +110,16 @@
 <script src="../js/calc.js"></script>
 <script>
 (function () {
-  var r = CalcModel.compute({ revenue: 2000 });
+  var r = CalcModel.compute({ revenue: CalcModel.SharedState.getRevenue(2000) });
   var P = CalcModel.computePeriods(r);
 
   // 结论卡
-  document.getElementById('c-gap').textContent = CalcModel.fmtWan(P.worstGap);
+  document.getElementById('c-gap').textContent = CalcModel.fmtWan(Math.abs(P.worstGap));
   document.getElementById('c-fund').textContent = CalcModel.fmtWan(P.totalFunding);
+  // 口径对照
+  document.getElementById('k-turn').textContent = CalcModel.fmtWan(P.totalFunding);
+  document.getElementById('k-need').textContent = CalcModel.fmtWan(r.fundNeed);
+  document.getElementById('k-debt').textContent = CalcModel.fmtWan(P.endDebt);
   document.getElementById('rc-inv').textContent = CalcModel.fmtWan(r.inventory);
   document.getElementById('rc-nc').textContent = CalcModel.fmtWan(r.netCash);
 
@@ -90,7 +130,8 @@
     b.className = 'tl-card' + (i === 1 ? ' active' : '');
     b.innerHTML = '<span class="tl-period">' + pd.name + '</span>' +
       '<span class="tl-brief">付款后 ' + CalcModel.fmtWan(pd.afterPayRaw) + ' 万' +
-      (pd.funding > 0 ? ' · 融资 ' + CalcModel.fmtWan(pd.funding) : '') + '</span>';
+      (pd.funding > 0 ? ' · 融资 ' + CalcModel.fmtWan(pd.funding) : '') +
+      (pd.repay > 0 ? ' · 还款 ' + CalcModel.fmtWan(pd.repay) : '') + '</span>';
     b.addEventListener('click', function () {
       document.querySelectorAll('.tl-card').forEach(function (x) { x.classList.remove('active'); });
       b.classList.add('active');
@@ -116,7 +157,9 @@
     html += line('付款前现金', CalcModel.fmtWan(pd.beforePay), pd.beforePay < 0 ? 'c-red' : 'c-gray');
     html += line('付货款后（未融资）', CalcModel.fmtWan(pd.afterPayRaw), 'c-red');
     html += line('即时融资补足', '+' + CalcModel.fmtWan(pd.funding), 'c-blue');
+    html += line('偿还存量借款', '−' + CalcModel.fmtWan(pd.repay), 'c-blue');
     html += line('时段末现金', CalcModel.fmtWan(pd.endCash), 'c-green');
+    html += line('期末借款余额', CalcModel.fmtWan(pd.debt), 'c-blue');
     document.getElementById('detail').innerHTML = html;
   }
   showDetail(1);
@@ -136,6 +179,14 @@
   recon += '<div style="display:flex;justify-content:space-between;padding:8px 0 2px;font-weight:800;">' +
     '<span>净现金流</span><span class="c-red" style="font-family:monospace;">' + CalcModel.fmtWan(r.netCash) + '</span></div>';
   document.getElementById('recon').innerHTML = recon;
+
+  // 风险预警
+  var rh = '';
+  CalcModel.assessRisk(r).forEach(function (k) {
+    rh += '<div class="risk-item is-' + k.level + '"><span class="ri-title">' + k.title +
+      '</span><p class="ri-text">' + k.text + '</p></div>';
+  });
+  document.getElementById('risk-list').innerHTML = rh;
 })();
 </script>
 </body>

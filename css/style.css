@@ -35,6 +35,14 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+
+/* 键盘导航：清晰可见的焦点环（鼠标点击不显示） */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid #1a56db;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
 body {
   margin: 0;
   font-family: var(--font);
@@ -322,6 +330,8 @@ button.btn.ghost:hover { background: var(--brand-soft); }
 .wf-result .wf-bar { background: var(--warn); }
 .wf-result .wf-num { color: var(--warn); }
 .wf-result .wf-label { font-weight: 800; color: var(--ink); }
+.wf-neg .wf-bar { background: var(--warn); }
+.wf-neg .wf-num { color: var(--warn); font-weight: 700; }
 
 /* 明细行列表（费用拆分） */
 .line-list { margin: 4px 0; }
@@ -547,6 +557,8 @@ button.btn { min-height: 44px; }
 
   /* 新增交互组件的手机布局 */
   .tl-cards { flex-direction: column; gap: 8px; }
+  .timeline { flex-direction: column; gap: 6px; }
+  .tl-seg { min-height: 0; }
   .tl-card { flex-direction: row; align-items: center; justify-content: space-between; }
   .tl-card .tl-brief { text-align: right; max-width: 58%; }
   .wf-row { gap: 8px; }
@@ -559,6 +571,55 @@ button.btn { min-height: 44px; }
 }
 
 @media print {
-  .topbar, .pager { display: none; }
-  body { background: #fff; }
+  .topbar, .pager, noscript, .btn, .switch, .slider-row input, .toggle-row { display: none; }
+  body { background: #fff; color: #000; font-size: 12px; }
+  .wrap { max-width: 100%; padding: 0; }
+  .card, .widget, .ratio-table, .big-table, .price-card, .risk-item, .warn, .note, .insight {
+    box-shadow: none; break-inside: avoid; page-break-inside: avoid;
+  }
+  .table-scroll { overflow: visible; }
+  a { color: #000; text-decoration: none; }
+  h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
 }
+
+/* ---------- 风险预警（assessRisk 实时渲染） ---------- */
+.risk-box { margin-top: 22px; }
+.risk-list { display: flex; flex-direction: column; gap: 10px; }
+.risk-item {
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--ink-3);
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+}
+.risk-item .ri-title { font-weight: 700; display: block; margin-bottom: 2px; }
+.risk-item .ri-text { color: var(--ink-2); font-size: 15px; margin: 0; }
+.risk-item.is-warn { border-left-color: var(--warn); background: var(--warn-bg); }
+.risk-item.is-warn .ri-title { color: var(--warn); }
+.risk-item.is-note { border-left-color: var(--brand); background: var(--brand-soft); }
+.risk-item.is-note .ri-title { color: var(--brand-deep); }
+
+/* 细分岗位表的分组行 */
+.ratio-table tr.grp td { background: var(--brand-soft); font-weight: 700; color: var(--brand-deep); }
+
+/* 签约前清单 */
+.check-list { list-style: none; padding: 0; margin: 6px 0 10px; }
+.check-list li {
+  position: relative; padding: 9px 10px 9px 38px; margin-bottom: 8px;
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius-sm);
+  line-height: 1.5;
+}
+.check-list li::before {
+  content: "?"; position: absolute; left: 10px; top: 9px;
+  width: 20px; height: 20px; border: 2px solid var(--brand); border-radius: 50%;
+  color: var(--brand); font-weight: 800; font-size: 13px; text-align: center; line-height: 18px;
+}
+
+/* 全年资金时间轴 */
+.timeline { display: flex; gap: 6px; }
+.tl-seg { border-radius: var(--radius-sm); padding: 10px 12px; color: #fff; min-height: 64px; }
+.tl-seg .ts-range { font-weight: 800; font-size: 15px; }
+.tl-seg .ts-event { font-size: 13px; margin-top: 4px; opacity: .95; line-height: 1.4; }
+.tl-seg.is-tight { background: #d92c2c; }
+.tl-seg.is-mid { background: #e0763a; }
+.tl-seg.is-loose { background: #2f9e6b; }

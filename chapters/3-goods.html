@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>第3件事 · 货备多少</title>
 <link rel="stylesheet" href="../css/style.css">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
 </head>
 <body>
+<noscript><div style="padding:20px;margin:16px;border:1px solid #d92c2c;border-radius:10px;background:#fff5f5;color:#d92c2c;font-weight:700;">本网站的交互和数字要靠 JavaScript 才能显示，请在浏览器设置里打开 JavaScript 后再看。</div></noscript>
 
 <div class="topbar">
   <div class="topbar-inner">
@@ -35,12 +37,12 @@
 
   <div class="card widget">
     <div class="slider-row">
-      <label>DTC 售罄率</label>
+      <label for="st">DTC 售罄率</label>
       <input type="range" id="st" min="30" max="80" step="1" value="50">
       <span class="val" id="st-val">50%</span>
     </div>
     <div class="slider-row is-locked">
-      <label>老库存消化比例<small class="lock-note">无历史库存</small></label>
+      <label for="old">老库存消化比例<small class="lock-note">无历史库存</small></label>
       <input type="range" id="old" min="0" max="30" step="1" value="0" disabled>
       <span class="val" id="old-val">0%</span>
     </div>
@@ -80,10 +82,10 @@
         <div class="lw-num c-orange">100</div>
       </div>
     </div>
-    <p class="subtle" style="margin-top:8px;">综合到岸率 = <strong class="c-orange">0</strong>，所以现金采购就等于品牌货款 <strong id="lw-buy">1454</strong> 万，没有额外到岸钱。</p>
+    <p class="subtle" style="margin-top:8px;">综合到岸率 = <strong class="c-orange">0</strong>，所以现金采购就等于品牌货款 <strong id="lw-buy">—</strong> 万，没有额外到岸钱。</p>
     <div class="note" style="margin-top:10px;">
-      <p style="margin:0 0 6px;"><strong>入关不是什么都不交：</strong>海关按品牌货款代征 <strong>13% 增值税</strong>（约 211 万），但这是价外税、能拿进项发票抵扣，不进成本，也不是费用。</p>
-      <p style="margin:0;"><strong>那 1% 货品损耗（约 18 万）是另一回事：</strong>它是退回来的破损货、展示样衣的货值核销，跟到岸费用不重复，直接减库存、计费用。</p>
+      <p style="margin:0 0 6px;"><strong>入关不是什么都不交：</strong>海关按品牌货款代征 <strong>13% 增值税</strong>（约 <strong id="lw-iv">—</strong> 万），但这是价外税、能拿进项发票抵扣，不进成本，也不是费用。</p>
+      <p style="margin:0;"><strong>那 1% 货品损耗（约 <strong id="lw-waste">—</strong> 万）是另一回事：</strong>它是退回来的破损货、展示样衣的货值核销，跟到岸费用不重复，直接减库存、计费用。</p>
     </div>
   </div>
 
@@ -130,6 +132,18 @@
     <p>这里把关税、国际运费、清关费全设成 0，是刻意做的最理想下限。真实要按每个 SKU 的 HS 编码、原产地、贸易条款逐笔算关税，运保、清关也随品类、港口、汇率波动。这些钱加回来，成本只会更高，不会更低。</p>
   </div>
 
+  <div class="warn">
+    <span class="lbl">两个躲在外面的风险，这门课先没算</span>
+    <p><strong>一是汇率。</strong>真实采购多半用美元等外币报价、付款，从签合同到真掏钱，汇率可能已经变了，同样一批货要多掏人民币。本模型全程按人民币算、零汇兑，等于把这条风险假设没了。</p>
+    <p><strong>二是平行进口（海淘）。</strong>要是你国内定的价，比海外同款高出一截，顾客就去找代购、海淘，货被分流，你的价也守不住。这要看国内外的成本差，本模型也没体现。</p>
+    <p>这两条都属于外部风险，这里只先点出来、不做成滑块。真实做起来，它们会再咬你一口，成本和销量只会更难看。</p>
+  </div>
+
+  <div class="risk-box">
+    <h2>这么备货，会有哪些风险</h2>
+    <div class="risk-list" id="risk-list">—</div>
+  </div>
+
   <div class="problem">
     <div class="tag">引出下一件事</div>
     <p>货备好了，怎么让客户看到、下单？<strong>流量和推广，要花多少钱。</strong></p>
@@ -159,7 +173,7 @@
     document.getElementById('st-val').textContent = (st * 100).toFixed(0) + '%';
     document.getElementById('old-val').textContent = (old * 100).toFixed(0) + '%';
 
-    var r = CalcModel.compute({ revenue: 2000, sellThrough: st, oldPct: old });
+    var r = CalcModel.compute({ revenue: CalcModel.SharedState.getRevenue(2000), sellThrough: st, oldPct: old });
 
     document.getElementById('c-buy').textContent = CalcModel.fmtWan(r.purchaseInclLanding);
     document.getElementById('c-inv').textContent = CalcModel.fmtWan(r.inventory);
@@ -169,6 +183,8 @@
     document.getElementById('m-buy').textContent = CalcModel.fmtWan(r.purchaseInclLanding);
     document.getElementById('m-inv').textContent = CalcModel.fmtWan(r.inventory);
     document.getElementById('lw-buy').textContent = CalcModel.fmtWan(r.purchaseInclLanding, 0);
+    document.getElementById('lw-iv').textContent = CalcModel.fmtWan(r.importVat, 0);
+    document.getElementById('lw-waste').textContent = CalcModel.fmtWan(r.wastage, 0);
 
     // 含税价格体系（以一件不含税 100 为基准，数字随引擎参数走）
     var base = 100;
@@ -188,6 +204,14 @@
     document.getElementById('p-dist-note').textContent =
       '毛利率 ' + (CalcModel.C.distMargin * 100).toFixed(0) + '%，成本占 ' + (distCostRate * 100).toFixed(0) +
       '%。这是分销商现款提货付的含税价。';
+
+    // 风险预警（实时随备货口径）
+    var rh = '';
+    CalcModel.assessRisk(r).forEach(function (k) {
+      rh += '<div class="risk-item is-' + k.level + '"><span class="ri-title">' + k.title +
+        '</span><p class="ri-text">' + k.text + '</p></div>';
+    });
+    document.getElementById('risk-list').innerHTML = rh;
   }
 
   stEl.addEventListener('input', render);

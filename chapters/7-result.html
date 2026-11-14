@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>第7件事 · 利润与5年沙盘</title>
 <link rel="stylesheet" href="../css/style.css">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
 </head>
 <body>
+<noscript><div style="padding:20px;margin:16px;border:1px solid #d92c2c;border-radius:10px;background:#fff5f5;color:#d92c2c;font-weight:700;">本网站的交互和数字要靠 JavaScript 才能显示，请在浏览器设置里打开 JavaScript 后再看。</div></noscript>
 
 <div class="topbar">
   <div class="topbar-inner">
@@ -28,7 +30,7 @@
       <div><span class="concl-big" id="y1-np">—</span><span class="concl-unit">万账面净利</span></div>
       <div><span class="concl-big c-red" id="y1-nc">—</span><span class="concl-unit">万净现金</span></div>
     </div>
-    <div class="concl-sub">卖 2000 万，账上反而亏 <strong id="y1-np2">—</strong> 万，兜里现金还少了 <strong id="y1-nc2">—</strong> 万。账面已经亏了，现金缺口更大，第一年就不轻松。</div>
+    <div class="concl-sub" id="y1-sentence">—</div>
   </div>
 
   <h2>如果连续做 5 年，会怎样</h2>
@@ -68,12 +70,29 @@
 
   <div class="insight">
     <span class="lbl">看完这张表，记住三件事</span>
-    <p><strong>第一</strong>，销售从 2000 万做到 1.2 亿，规模翻 6 倍，利润却一直很薄、多数年份还在亏；<strong>第二</strong>，账面利润和兜里现金完全是两回事，5 年累计净现金比累计净利差了几千个万，差就差在库存和扩张占款；<strong>第三</strong>，业务要发展，得先备一大笔钱，融资需求最高到 4000 多万，靠往年攒钱根本不现实。</p>
+    <p><strong>第一</strong>，销售从 2000 万做到 1.2 亿，规模翻 6 倍，利润却一直很薄、多数年份还在亏；<strong>第二</strong>，账面利润和兜里现金完全是两回事，5 年累计净现金比累计净利差了几千个万，差就差在库存和扩张占款；<strong>第三</strong>，业务要发展，得先备一大笔钱，融资需求最高到 <strong id="t-fund-note">—</strong> 万，靠往年攒钱根本不现实。</p>
   </div>
 
   <div class="warn">
     <span class="lbl">别忘了，这还是把人力算便宜了</span>
     <p>模型用的是混合人均 21.6 万，有市场竞争力的细分岗位薪酬更高，还有一堆没算的费用。所以真实的利润更低、现金缺口更大，这张表给的是偏乐观的下限。</p>
+  </div>
+
+  <div class="card" style="border-color:#2356a6;background:#f3f7fe;">
+    <h2 style="margin-top:0;color:#173d78;">真要签代理合同前，先逐条问自己</h2>
+    <ul class="check-list">
+      <li><strong>钱：</strong>最紧那刻要补的缺口，我有没有对应的额度或抵押？借不到怎么办？</li>
+      <li><strong>货：</strong>售罄率达不到、库存压在手里，我打算怎么清、能扛多久？</li>
+      <li><strong>人：</strong>按有市场竞争力的真实薪酬算，不是 21.6 万的平均价，账还撑不撑得住？</li>
+      <li><strong>外部：</strong>汇率一波动、海淘平行进口分流，我有没有对冲或调价的预案？</li>
+      <li><strong>余量：</strong>这些数字全是“最理想下限”，真实只会更糟，我留没留出安全垫？</li>
+    </ul>
+    <p class="subtle" style="margin-bottom:0;">五条都答得上来，再谈签约；答不上来，就先把这一件事弄清楚再往前走。</p>
+  </div>
+
+  <div class="risk-box">
+    <h2>收口之前，再看一遍全部风险</h2>
+    <div class="risk-list" id="risk-list">—</div>
   </div>
 
   <div class="pager">
@@ -135,8 +154,14 @@
     document.getElementById('y1-np').textContent = CalcModel.fmtWan(y1.netProfit);
     document.getElementById('y1-np').className = 'concl-big ' + (y1.netProfit >= 0 ? 'c-green' : 'c-red');
     document.getElementById('y1-nc').textContent = CalcModel.fmtWan(y1.netCash);
-    document.getElementById('y1-np2').textContent = CalcModel.fmtWan(y1.netProfit);
-    document.getElementById('y1-nc2').textContent = CalcModel.fmtWan(y1.netCash);
+    // 收口句子随正负动态切换，避免盈利时说“亏”、双重否定
+    var npWord = y1.netProfit >= 0 ? '赚' : '亏';
+    var npAbs = CalcModel.fmtWan(Math.abs(y1.netProfit));
+    var cashWord = y1.netCash >= 0 ? '多了' : '少了';
+    var cashAbs = CalcModel.fmtWan(Math.abs(y1.netCash));
+    document.getElementById('y1-sentence').textContent =
+      '卖 2000 万，账上' + npWord + ' ' + npAbs + ' 万，兜里现金' + cashWord + ' ' + cashAbs + ' 万。' +
+      (y1.netProfit < 0 ? '账面已经亏了，现金缺口更大，第一年就不轻松。' : '账面能赚，但现金仍被库存和货款占着，不能松。');
 
     // 表头
     var html = '<thead><tr><th>指标</th>';
@@ -159,6 +184,15 @@
     document.getElementById('t-np').textContent = CalcModel.fmtWan(M.totalNetProfit);
     document.getElementById('t-nc').textContent = CalcModel.fmtWan(M.totalNetCash);
     document.getElementById('t-fund').textContent = CalcModel.fmtWan(years[4].fundNeed);
+    document.getElementById('t-fund-note').textContent = CalcModel.fmtWan(years[4].fundNeed);
+
+    // 风险预警（按第一年口径）
+    var rh = '';
+    CalcModel.assessRisk(y1).forEach(function (k) {
+      rh += '<div class="risk-item is-' + k.level + '"><span class="ri-title">' + k.title +
+        '</span><p class="ri-text">' + k.text + '</p></div>';
+    });
+    document.getElementById('risk-list').innerHTML = rh;
   }
 
   stableEl.addEventListener('change', render);

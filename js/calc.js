@@ -34,6 +34,7 @@
     managerAnnual: 36,      // 管理岗全年公司成本（税前 2 万/月 ×1.5×12）
     managerRatio: 0.20,     // 管理岗占比（4 基础 : 1 管理）
     blendedAnnual: 21.6,    // 混合人均年成本（18×0.8 + 36×0.2）
+    realBlendedAnnual: 282.75 / 8.5, // 细分岗位市场竞争力人均年成本（第一年真实人力 282.75 / 8.5 人）
     onlineOpexRate: 0.09,   // 线上运营费率合计（除投流，×线上含税）
     platformCommissionRate: 0.03, // 平台佣金与服务费（×线上含税）
     warehouseFulfillRate: 0.04,   // 仓储物流履约：收发货、退货处理（×线上含税，不含进口到岸）
@@ -398,29 +399,44 @@
       },
     ];
 
-    // 常规费用（含人员、推广、运营、提成，不含资本/押金）按月份权重摊
+    // 常规费用（现金口径：剔除 1% 非现金损耗，含人员/推广/运营/提成，不含资本/押金）按月份权重摊
     const monthW = { p12: 2 / 12, p38: 6 / 12, p912: 4 / 12 };
+    const cashOpex = r.totalOpex - r.wastage;
     let running = 0;
     let totalFunding = 0;
+    let totalRepay = 0;
+    let debt = 0;
     let worstAfter = 0;
     periods.forEach(function (pd) {
-      pd.regularOpex = r.totalOpex * monthW[pd.key];
+      pd.regularOpex = cashOpex * monthW[pd.key];
       // 付款前现金：时段初现金 + 回款 − 到岸/进口税/常规费用/资本，未付大额货款
       pd.beforePay = running + pd.inflow - pd.landingPay
         - pd.importVat - pd.regularOpex - pd.capex;
       // 付款后（未融资）现金，即本时段资金最低点
       pd.afterPayRaw = pd.beforePay - pd.brandPay;
-      // 跌破安全线则即时融资补足到安全线
-      pd.funding = Math.max(0, C.cashBuffer - pd.afterPayRaw);
-      totalFunding += pd.funding;
-      pd.afterPay = pd.afterPayRaw + pd.funding;
-      pd.net = pd.afterPay - running;
-      running = pd.afterPay;
+      if (pd.afterPayRaw < C.cashBuffer) {
+        // 现金不足：即时融资补足到安全线，债务增加
+        pd.funding = C.cashBuffer - pd.afterPayRaw;
+        pd.repay = 0;
+        debt += pd.funding;
+        totalFunding += pd.funding;
+        running = C.cashBuffer;
+      } else {
+        // 现金充裕：超过安全线的部分优先偿还存量借款
+        pd.funding = 0;
+        pd.repay = Math.min(debt, pd.afterPayRaw - C.cashBuffer);
+        debt -= pd.repay;
+        totalRepay += pd.repay;
+        running = pd.afterPayRaw - pd.repay;
+      }
+      pd.afterPay = running;
+      pd.debt = debt;
       pd.endCash = running;
       if (pd.afterPayRaw < worstAfter) worstAfter = pd.afterPayRaw;
     });
 
-    return { periods: periods, worstGap: worstAfter, totalFunding: totalFunding };
+    return { periods: periods, worstGap: worstAfter, totalFunding: totalFunding,
+      totalRepay: totalRepay, endDebt: debt };
   }
 
   /* ============================================================
@@ -453,6 +469,18 @@
   /* ============================================================
      十、风险检测（调数据时实时触发）
      ============================================================ */
+  // 细分岗位市场竞争力口径：把混合人均换成真实人均，重算净利与现金
+  function realStaff(r) {
+    const realStaffCost = r.headcount * C.realBlendedAnnual;
+    const delta = realStaffCost - r.staffCost;
+    // 人力是现金费用；亏损期税为 0、无税盾，盈利则按税后
+    const ebit = r.ebit - delta;
+    const realNetProfit = ebit > 0 ? ebit * (1 - C.taxRate) : ebit;
+    const realNetCash = r.netCash - delta;
+    return { realStaffCost: realStaffCost, delta: delta,
+      realNetProfit: realNetProfit, realNetCash: realNetCash };
+  }
+
   function assessRisk(r) {
     const risks = [];
     const p = r.p;
@@ -501,6 +529,17 @@
       });
     }
 
+    // 两个外部风险：模型完全没建变量，无论参数如何都常驻提示
+    risks.push({
+      level: 'warn', title: '汇率风险（本模型没算）',
+      text: '真实采购常按美元等外币结算，签约到付款之间汇率一波动，同样的货要掏更多人民币。这里全程零汇兑，没算这笔账，加进来成本只会更高。'
+    });
+
+    risks.push({
+      level: 'warn', title: '平行进口 / 海淘风险（本模型没算）',
+      text: '要是国内定价偏高，海外同款更便宜，货会被海淘、平行进口分流，你的价就守不住。这取决于国内外成本和价差，本模型没体现，真实会再压你的销量和价格。'
+    });
+
     risks.push({
       level: 'note', title: '最理想口径',
       text: '已假设零关税、零运费、零清关费，只代征增值税。真实有关税、运费、退货和展示损耗，有市场竞争力的细分岗位薪酬也更高——真实只会更坏。'
@@ -508,6 +547,24 @@
 
     return risks;
   }
+
+  // 章节间共享状态：把第1章定的收入存到本地，后续章节读取，消除“各章写死2000”的孤岛
+  var SharedState = {
+    KEY: 'agency_state_v1',
+    _read: function () {
+      try { return JSON.parse(global.localStorage.getItem(this.KEY)) || {}; }
+      catch (e) { return {}; }
+    },
+    getRevenue: function (fallback) {
+      var s = this._read();
+      return (typeof s.revenue === 'number' && isFinite(s.revenue)) ? s.revenue : (fallback || 2000);
+    },
+    setRevenue: function (v) {
+      var s = this._read();
+      s.revenue = v;
+      try { global.localStorage.setItem(this.KEY, JSON.stringify(s)); } catch (e) {}
+    }
+  };
 
   global.CalcModel = {
     C: C,
@@ -520,6 +577,8 @@
     backofficeHeadcount: backofficeHeadcount,
     storesFromRevenue: storesFromRevenue,
     assessRisk: assessRisk,
+    realStaff: realStaff,
+    SharedState: SharedState,
     fmtWan: fmtWan,
     fmtPct: fmtPct,
     fmtInt: fmtInt,

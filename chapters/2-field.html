@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>第2件事 · 渠道怎么配合</title>
 <link rel="stylesheet" href="../css/style.css">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
 </head>
 <body>
+<noscript><div style="padding:20px;margin:16px;border:1px solid #d92c2c;border-radius:10px;background:#fff5f5;color:#d92c2c;font-weight:700;">本网站的交互和数字要靠 JavaScript 才能显示，请在浏览器设置里打开 JavaScript 后再看。</div></noscript>
 
 <div class="topbar">
   <div class="topbar-inner">
@@ -55,11 +57,17 @@
 
   <div class="warn">
     <span class="lbl">这些数量，直接决定要配多少人</span>
-    <p>几家门店、几个分销客户，不是孤立数字。门店要店长导购、客户要有人对接，第 5 章的人头，就是从这里算出来的。</p>
+    <p>几家门店、几个分销客户，不是孤立数字。门店要店长导购、客户要有人对接，第 5 件事的人头，就是从这里算出来的。</p>
   </div>
 
   <div class="note">
     <strong>渠道用的是平均假设。</strong>真实生意里，每个平台、每个客户的扣点、账期、提货节奏都不一样，没法一条条建。这里用平均占比简化，先把大结构想清楚；具体到合同，只会更复杂。
+    客户数也是按<strong>单客年提货额的行业经验值</strong>反推的（多品牌约 150 万、买手约 80 万、单品牌约 500 万，向上取整），不是合同实数；真实换成你自己的客户合同额，数会变。
+  </div>
+
+  <div class="risk-box">
+    <h2>这么拆，会有哪些风险</h2>
+    <div class="risk-list" id="risk-list">—</div>
   </div>
 
   <div class="problem">
@@ -94,7 +102,7 @@
     chOnline: 0.80, chOffline: 0, chDistSingle: 0, chDistMulti: 0.15, chBuyer: 0.05,
   };
   var state = Object.assign({}, DEFAULT);
-  var REV = 2000;
+  var REV = CalcModel.SharedState.getRevenue(2000);
 
   // 构建滑块
   var wrap = document.getElementById('sliders');
@@ -104,26 +112,34 @@
     var locked = c.key === 'chOffline' || c.key === 'chDistSingle';
     row.className = 'slider-row' + (locked ? ' is-locked' : '');
     row.innerHTML =
-      '<label>' + c.name + (locked ? '<small class="lock-note">' + lockNotes[c.key] + '</small>' : '') + '</label>' +
-      '<input type="range" min="0" max="100" step="1" data-key="' + c.key + '"' + (locked ? ' disabled' : '') + '>' +
+      '<label for="sl-' + c.key + '">' + c.name + (locked ? '<small class="lock-note">' + lockNotes[c.key] + '</small>' : '') + '</label>' +
+      '<input type="range" min="0" max="100" step="1" id="sl-' + c.key + '" data-key="' + c.key + '"' +
+      ' aria-label="' + c.name + '"' + (locked ? ' disabled' : '') + '>' +
       '<span class="val" data-val="' + c.key + '">—</span>';
     wrap.appendChild(row);
   });
 
-  // 强制 100% 联动：改一个，其余按当前比例反向平衡
+  // 锁定项：第一年恒为 0，不参与任何联动分配
+  var LOCKED = { chOffline: true, chDistSingle: true };
+  function isLocked(key) { return !!LOCKED[key]; }
+
+  // 强制 100% 联动：改一个，其余非锁定项按当前比例反向平衡；锁定项恒 0
   function change(key, newPct) {
     var nv = Math.max(0, Math.min(100, newPct)) / 100;
-    var others = CHS.filter(function (c) { return c.key !== key; });
+    var free = CHS.filter(function (c) { return !isLocked(c.key); });
+    var others = free.filter(function (c) { return c.key !== key; });
     var othersTotal = others.reduce(function (s, c) { return s + state[c.key]; }, 0);
     var remain = 1 - nv;
     if (othersTotal > 0.0001) {
       others.forEach(function (c) {
         state[c.key] = state[c.key] / othersTotal * remain;
       });
-    } else {
-      others[0].key && (state[others[0].key] = remain);
+    } else if (others.length) {
+      state[others[0].key] = remain;
     }
     state[key] = nv;
+    // 锁定项恒为 0，绝不参与分配
+    CHS.forEach(function (c) { if (isLocked(c.key)) state[c.key] = 0; });
   }
 
   wrap.addEventListener('input', function (e) {
@@ -172,6 +188,14 @@
     document.getElementById('m-dist').textContent = CalcModel.fmtWan(r.distTaxIncl);
     document.getElementById('m-stores').textContent = r.stores;
     document.getElementById('m-clients').textContent = r.totalClients;
+
+    // 风险预警（实时随当前渠道结构）
+    var rh = '';
+    CalcModel.assessRisk(r).forEach(function (k) {
+      rh += '<div class="risk-item is-' + k.level + '"><span class="ri-title">' + k.title +
+        '</span><p class="ri-text">' + k.text + '</p></div>';
+    });
+    document.getElementById('risk-list').innerHTML = rh;
   }
 
   render();
