@@ -18,78 +18,63 @@
 </div>
 
 <div class="wrap">
-  <div class="chapter-kicker">第 01 件事</div>
+  <div class="chapter-kicker">第 01 件事 · 销售额</div>
   <h1>先定明年卖多少</h1>
-  <p class="lead">接手一个品牌做独家代理，开工前第一个动作是什么？</p>
+
+  <!-- 顶部结论卡 -->
+  <div class="concl">
+    <span class="concl-tag">第一年 · 结论先行</span>
+    <div><span class="concl-big" id="c-rev">—</span><span class="concl-unit">万含税收入</span></div>
+    <div class="concl-sub">去掉增值税，真正的<strong>不含税收入只有 <span id="c-revex">—</span> 万</strong>。这一章只看规模，不谈赚不赚。</div>
+  </div>
 
   <div class="problem">
     <div class="tag">这一件事要解决</div>
-    <p>不是先想「开几家店、招多少人、投多少广告」，而是先定一个数：<strong>明年卖多少钱。</strong></p>
+    <p>开工第一个动作，不是想开店、招人，是先定一个数：<strong>明年卖多少钱。</strong></p>
   </div>
 
-  <p>为什么从「卖多少」开始？因为后面的一切——买多少货、开几家店、招多少人、备多少钱——<strong>都是这个目标「派生」出来的</strong>。目标是自变量，其余全是因变量。</p>
-
-  <div class="insight">
-    <span class="lbl">本质</span>
-    <p>目标是「目的地」，采购、渠道、推广、人员、资金是「路线和装备」。先定去哪，再决定开什么车、带多少油。</p>
-  </div>
+  <p>为什么从「卖多少」开始？因为后面买多少货、开几家店、招多少人、备多少钱，<strong>全是这个数派生出来的</strong>。它是自变量，其余都是因变量。</p>
 
   <div class="warn">
     <span class="lbl">逻辑别倒过来</span>
-    <p>「店数」是你拍脑袋定的，用它去决定「卖多少」，等于让一个没验证过的数字当裁判。店该不该开、开几家，应该反过来由「卖多少」来检验。</p>
+    <p>先拍脑袋定「开几家店」，再让它决定卖多少，等于让一个没验证过的数字当裁判。店该开几家，得反过来由「卖多少」来检验。</p>
   </div>
 
-  <h2>先看「规模」，别看「赚不赚」</h2>
-  <p class="subtle">这里只回答一件事：卖这么多，大概要订多少货、备多少钱。赚不赚钱，要等货、渠道、推广、人员都定了，最后才算——现在先别管。</p>
+  <h2>拖一拖，看「2000 万」到底是什么口径</h2>
 
   <div class="card widget">
-    <div class="slider-row"><label>明年含税收入目标</label><input type="range" id="rev" min="500" max="12000" step="100" value="2000"><span class="val" id="rev-val">2000 万</span></div>
-
-    <div class="metric-grid">
-      <div class="metric"><div class="k">要订的货（货款）</div><div class="v" id="m-buy">—</div><div class="u">万元</div></div>
-      <div class="metric"><div class="k">年末压的库存</div><div class="v" id="m-inv">—</div><div class="u">万元</div></div>
-      <div class="metric"><div class="k">要备的资金</div><div class="v" id="m-fn">—</div><div class="u">万元</div></div>
+    <div class="slider-row">
+      <label>明年含税收入目标</label>
+      <input type="range" id="rev" min="500" max="6000" step="100" value="2000">
+      <span class="val" id="rev-val">2000 万</span>
     </div>
 
-    <div class="risks" id="risks"></div>
-    <p class="subtle" style="margin-top:8px;">上面用的是默认假设（售罄率 50%、毛利率 65% 等）做的<strong>规模预览</strong>。这些假设会在后面的「货」「场」里逐个变成你自己的决策。</p>
+    <div class="metric-grid">
+      <div class="metric"><div class="k">含税收入（客户付的钱）</div><div class="v c-green" id="m-rev">—</div><div class="u">万元</div></div>
+      <div class="metric"><div class="k">不含税收入（真正的营收）</div><div class="v c-green" id="m-revex">—</div><div class="u">万元</div></div>
+    </div>
+
+    <p class="subtle" style="margin:6px 0 2px;">2000 万是<strong>含税口径</strong>，拆开看就两块：</p>
+    <div class="stack-bar" id="rev-stack">
+      <span id="seg-rev" style="background:#2f9e6b;">—</span>
+      <span id="seg-vat" style="background:#6b7280;">—</span>
+    </div>
+    <div class="stack-legend">
+      <span class="i"><span class="sw" style="background:#2f9e6b;"></span>不含税收入 <b id="lg-rev">—</b> 万</span>
+      <span class="i"><span class="sw" style="background:#6b7280;"></span>增值税（13%，要上缴） <b id="lg-vat">—</b> 万</span>
+    </div>
+
+    <p class="subtle" style="margin-top:10px;">那 230 万增值税是<strong>替国家代收的钱</strong>，不是你的收入，很快要缴出去。所以别拿含税数字当自己能花的钱。</p>
   </div>
 
-  <script src="../js/calc.js"></script>
-  <script src="../js/site.js"></script>
-  <script>
-  (function(){
-    function render(){
-      var rev=parseInt(document.getElementById('rev').value,10);
-      document.getElementById('rev-val').textContent=rev+' 万';
-
-      var r=CalcModel.compute({ revenue:rev });
-      document.getElementById('m-buy').textContent=CalcModel.fmtWan(r.buy,0);
-      document.getElementById('m-inv').textContent=CalcModel.fmtWan(r.inventory,0);
-      document.getElementById('m-fn').textContent=CalcModel.fmtWan(r.fundNeed,0);
-      document.getElementById('m-fn').style.color = '#d92c2c';
-      document.getElementById('m-inv').style.color = r.inventory>600 ? '#d92c2c' : '#1c2333';
-
-      // 目标环节只提示「规模/采购」层面的风险，利润相关的留给「收口」环节
-      var risks=CalcModel.assessRisk(r).filter(function(x){
-        return ['持续亏损','费用吃毛利','人力超前'].indexOf(x.title) === -1;
-      });
-      Site.renderRisks(document.getElementById('risks'), risks);
-    }
-    document.getElementById('rev').addEventListener('input',render);
-    render();
-  })();
-  </script>
-
-  <div class="note">
-    <strong>为什么这里不给你看「净利润」？</strong>因为净利润是「收口」——要等货怎么买、渠道怎么铺、推广怎么投、人怎么招，这一串都定了才有意义。你现在只定了「卖多少」，还谈不到赚不赚。而且独家代理前几年本来就是在「战略投入期」，亏是常态，这个到「收口」专门讲清楚。
+  <div class="insight">
+    <span class="lbl">为什么这里不给你看利润</span>
+    <p>净利润是收口——得等货怎么买、渠道怎么铺、推广怎么投、人怎么招，这一串都定了才算。现在只定了卖多少，还谈不到赚不赚。</p>
   </div>
-
-  <p>目标定了，下一个问题自然就来了——</p>
 
   <div class="problem">
     <div class="tag">引出下一件事</div>
-    <p>明年卖 2000 万，这些货，<strong>从哪几条路卖出去</strong>？网店、门店、分销，怎么拆、又怎么知道拆得接不接得住？</p>
+    <p>这 2000 万，<strong>从哪几条路卖出去</strong>？网店、门店、分销，怎么拆，又怎么知道拆得接不接得住？</p>
   </div>
 
   <div class="pager">
@@ -99,10 +84,44 @@
     </a>
     <a href="2-field.html" class="next">
       <div class="dir">下一件事</div>
-      <div class="t">场 · 渠道怎么配合</div>
+      <div class="t">渠道 · 怎么配合</div>
     </a>
   </div>
 </div>
 
+<script src="../js/calc.js"></script>
+<script>
+(function () {
+  var slider = document.getElementById('rev');
+
+  function render() {
+    var rev = parseInt(slider.value, 10);
+    document.getElementById('rev-val').textContent = rev + ' 万';
+
+    var r = CalcModel.compute({ revenue: rev });
+    var vat = r.revTaxIncl - r.revExcl;
+
+    // 结论卡
+    document.getElementById('c-rev').textContent = CalcModel.fmtInt(r.revTaxIncl);
+    document.getElementById('c-revex').textContent = CalcModel.fmtWan(r.revExcl);
+
+    // 数字卡
+    document.getElementById('m-rev').textContent = CalcModel.fmtInt(r.revTaxIncl);
+    document.getElementById('m-revex').textContent = CalcModel.fmtWan(r.revExcl);
+
+    // 堆叠条（按比例分宽）
+    var pRev = r.revExcl / r.revTaxIncl * 100;
+    document.getElementById('seg-rev').style.width = pRev + '%';
+    document.getElementById('seg-vat').style.width = (100 - pRev) + '%';
+    document.getElementById('seg-rev').textContent = CalcModel.fmtWan(r.revExcl);
+    document.getElementById('seg-vat').textContent = CalcModel.fmtWan(vat);
+    document.getElementById('lg-rev').textContent = CalcModel.fmtWan(r.revExcl);
+    document.getElementById('lg-vat').textContent = CalcModel.fmtWan(vat);
+  }
+
+  slider.addEventListener('input', render);
+  render();
+})();
+</script>
 </body>
 </html>

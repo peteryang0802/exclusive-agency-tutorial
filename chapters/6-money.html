@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>第6件事 · 钱够不够</title>
+<title>第6件事 · 现金流</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -18,140 +18,118 @@
 </div>
 
 <div class="wrap">
-  <div class="chapter-kicker">第 06 件事</div>
-  <h1>钱够不够、什么时候备</h1>
-  <p class="lead">货、人、推广都定好了。但这一切，都要先掏钱——而且「掏钱」和「回钱」不在同一个时间点。</p>
+  <div class="chapter-kicker">第 06 件事 · 现金流</div>
+  <h1>钱什么时候最紧，会不会断</h1>
 
-  <div class="problem">
-    <div class="tag">这一件事要解决</div>
-    <p>独家代理最要命的地方：<strong>货要先付钱，钱要后回笼</strong>。中间这个时间差，决定了你要准备多少现金。</p>
+  <!-- 顶部结论卡 -->
+  <div class="concl">
+    <span class="concl-tag">第一年 · 结论先行</span>
+    <div><span class="concl-big c-red" id="c-gap">—</span><span class="concl-unit">万 · 最紧的资金缺口</span></div>
+    <div class="concl-sub">出现在 3—8 月付完货款那一刻。账上没钱，就得临时融资，第一年累计要补 <strong id="c-fund">—</strong> 万。</div>
   </div>
 
-  <p>先看一个最简单、也最扎心的例子：</p>
+  <p>利润是按全年算的，但钱是<strong>一笔一笔进出</strong>的。货款要提前付、回款要等卖完，中间很容易出现一个大窟窿。</p>
 
-  <div class="insight">
-    <span class="lbl">先付 100，后收 120</span>
-    <p>进货先付 100 万，之后卖掉收回 120 万。全年算下来净赚 20 万，但付款那天，你必须先掏出 100 万。<strong>「赚 20 万」和「先拿 100 万出来」，是两件事。</strong></p>
-  </div>
-
-  <p>所以这里要看两个数：</p>
-
-  <table>
-    <tr><th style="width:30%;">数字</th><th>含义</th></tr>
-    <tr><td><strong>净现金流</strong></td><td>全年经营净消耗了多少现金（卖货回款 − 付货款 − 付费用）</td></tr>
-    <tr><td><strong>资金需求</strong></td><td>付款节点上，最多要一次备多少钱（比全年平均高，因为货款是「一波一波」付的）</td></tr>
-  </table>
-
-  <h2>钱是一波一波流的，不是匀速</h2>
-  <p class="subtle">一年拆成三段看，钱的松紧跟着季节走。</p>
-
-  <figure>
-    <svg width="100%" viewBox="0 0 680 170" role="img" aria-label="现金流三时段">
-      <rect x="30" y="40" width="160" height="70" rx="10" fill="#8fb0d8"/>
-      <text x="110" y="68" font-size="14" fill="#fff" text-anchor="middle" font-weight="700">1 — 2 月</text>
-      <text x="110" y="90" font-size="11" fill="#eef4fb" text-anchor="middle">接上年 FW 尾款</text>
-
-      <rect x="260" y="40" width="160" height="70" rx="10" fill="#2f6fc4"/>
-      <text x="340" y="68" font-size="14" fill="#fff" text-anchor="middle" font-weight="700">3 — 8 月</text>
-      <text x="340" y="90" font-size="11" fill="#eef4fb" text-anchor="middle">SS 经营 · FW 8 月付全款</text>
-
-      <rect x="490" y="40" width="160" height="70" rx="10" fill="#e8913a"/>
-      <text x="570" y="68" font-size="14" fill="#fff" text-anchor="middle" font-weight="700">9 — 12 月</text>
-      <text x="570" y="90" font-size="11" fill="#fff6ec" text-anchor="middle">FW 直营 75% 记当年</text>
-
-      <text x="340" y="140" font-size="12" fill="#d92c2c" text-anchor="middle" font-weight="600">8 月那一笔 FW 全款，是全年资金最紧的时刻</text>
-    </svg>
-    <figcaption>手机上可左右滑动查看完整时间轴。分段是为了看清「付款峰值」落在哪。</figcaption>
-  </figure>
-
-  <p class="subtle" style="margin:14px 0 8px;">点每个时段，看这段时间钱是松是紧：</p>
-  <div class="tl-cards" id="tl-cards">
-    <button class="tl-card" data-tl="0" type="button"><span class="tl-period">1—2 月</span><span class="tl-brief">付上年 FW 尾款</span></button>
-    <button class="tl-card" data-tl="1" type="button"><span class="tl-period">3—8 月</span><span class="tl-brief">SS 经营 · 8 月付 FW 全款</span></button>
-    <button class="tl-card" data-tl="2" type="button"><span class="tl-period">9—12 月</span><span class="tl-brief">FW 上市 · 回款增多</span></button>
-  </div>
-  <div class="tl-detail" id="tl-detail"></div>
-
-  <h2>动手看看要备多少钱</h2>
-
+  <h2>点三个时段，看钱怎么断、又怎么补上</h2>
   <div class="card widget">
-    <div class="slider-row"><label>含税收入目标</label><input type="range" id="rev" min="1000" max="5000" step="100" value="2000"><span class="val" id="rev-val">2000 万</span></div>
-    <div class="slider-row"><label>DTC 售罄率</label><input type="range" id="st" min="30" max="90" step="5" value="50"><span class="val" id="st-val">50%</span></div>
-
-    <div class="metric-grid">
-      <div class="metric"><div class="k">净现金流（消耗）</div><div class="v" id="m-nc">—</div><div class="u">万元</div></div>
-      <div class="metric"><div class="k">要备的资金</div><div class="v" id="m-fn">—</div><div class="u">万元</div></div>
-      <div class="metric"><div class="k">压在仓库的货</div><div class="v" id="m-inv">—</div><div class="u">万元</div></div>
-    </div>
-
-    <div class="risks" id="risks"></div>
+    <div class="tl-cards" id="tl"></div>
+    <div class="tl-detail" id="detail"></div>
+    <p class="subtle" style="margin-top:10px;">规则：现金一旦跌破 <strong>100 万安全线</strong>，就自动融资补回到 100 万。所以每段期末都至少留 100 万，不会真的变成负数——但那笔借来的钱，是要还的。</p>
   </div>
 
-  <script src="../js/calc.js"></script>
-  <script src="../js/site.js"></script>
-  <script>
-  (function(){
-    function render(){
-      var rev=parseInt(document.getElementById('rev').value,10);
-      var st=parseInt(document.getElementById('st').value,10)/100;
-      document.getElementById('rev-val').textContent=rev+' 万';
-      document.getElementById('st-val').textContent=Math.round(st*100)+'%';
-      var r=CalcModel.compute({revenue:rev, sellThrough:st});
-      document.getElementById('m-nc').textContent=CalcModel.fmtWan(r.netCash,0);
-      document.getElementById('m-fn').textContent=CalcModel.fmtWan(r.fundNeed,0);
-      document.getElementById('m-inv').textContent=CalcModel.fmtWan(r.inventory,0);
-      document.getElementById('m-nc').style.color = r.netCash<0 ? '#d92c2c' : '#0e7a3d';
-      document.getElementById('m-fn').style.color = '#d92c2c';
-      var risks=CalcModel.assessRisk(r).filter(function(x){
-        return ['现金流风险','汇率风险'].indexOf(x.title)>-1;
-      });
-      Site.renderRisks(document.getElementById('risks'), risks);
-    }
-    document.getElementById('rev').addEventListener('input',render);
-    document.getElementById('st').addEventListener('input',render);
-    render();
-  })();
-  </script>
-
-  <script>
-  (function(){
-    var details=[
-      '年初要把上年 FW 的尾款付清，新货还没大规模卖，钱出多进少，账上要留够开年的钱。',
-      'SS 开始经营、有回款，但 8 月要一次性付清 FW 全款（提货前 25 天全额），这是全年资金最紧的时刻，备不足就会断供。',
-      'FW 上市销售、回款开始变多，但 FW 只有 75% 当年确认，剩下 25% 要等明年 1—2 月，今年的账和这一季的账对不上。'
-    ];
-    var cards=document.querySelectorAll('.tl-card');
-    var detail=document.getElementById('tl-detail');
-    function show(i){
-      cards.forEach(function(c,j){ c.classList.toggle('active', j===i); });
-      detail.textContent=details[i];
-    }
-    cards.forEach(function(c,i){ c.addEventListener('click',function(){show(i);}); });
-    show(1);
-  })();
-  </script>
-
-  <div class="note">
-    <strong>留抵税额：</strong>进口增值税先占用了现金，进项大于销项形成的留抵，可结转下期抵扣，符合条件也可申请留抵退税。它是税款占用，不是利润，也不是自动到账的现金。
+  <h2>账面利润 ≠ 兜里的现金</h2>
+  <div class="card widget">
+    <p class="subtle" style="margin:0 0 6px;">从账面净利，一步步调到真实现金流：</p>
+    <div id="recon"></div>
+    <p class="subtle" style="margin-top:10px;">关键就在那 <strong class="c-purple">805 万库存</strong>：货已经花钱买了，但还没卖掉、没结成本，所以它不影响利润，却实实在在把现金掏走了。这就是「账上没亏多少，兜里却没钱」的原因。</p>
   </div>
-  <p>钱也算清楚了。现在就剩最后一个、也是所有人最关心的一个问题——</p>
+
+  <div class="warn">
+    <span class="lbl">想靠往年的净现金？不现实</span>
+    <p>第一年净现金是 −877 万，本身就在烧钱。业务还要继续扩张，开店、备货、招人都要再投入，资金缺口只会更大，指望往年攒下的钱来填，根本填不上。</p>
+  </div>
 
   <div class="problem">
     <div class="tag">引出最后一件事</div>
-    <p>货、场、人、钱，一路算下来，这个生意<strong>到底赚不赚钱</strong>？为什么前面总觉得哪里怪怪的？</p>
+    <p>第一年的账算到这儿，利润到底是多少？<strong>如果连续做 5 年，又会变成什么样。</strong></p>
   </div>
 
   <div class="pager">
     <a href="5-people.html">
       <div class="dir">上一件事</div>
-      <div class="t">底层·人 · 要多少人</div>
+      <div class="t">人成本 · 多少人</div>
     </a>
     <a href="7-result.html" class="next">
       <div class="dir">最后一件事</div>
-      <div class="t">收口 · 赚不赚、扛不扛</div>
+      <div class="t">利润 + 5 年沙盘</div>
     </a>
   </div>
 </div>
 
+<script src="../js/calc.js"></script>
+<script>
+(function () {
+  var r = CalcModel.compute({ revenue: 2000 });
+  var P = CalcModel.computePeriods(r);
+
+  // 结论卡
+  document.getElementById('c-gap').textContent = CalcModel.fmtWan(P.worstGap);
+  document.getElementById('c-fund').textContent = CalcModel.fmtWan(P.totalFunding);
+
+  // 时段卡
+  var tl = document.getElementById('tl');
+  P.periods.forEach(function (pd, i) {
+    var b = document.createElement('button');
+    b.className = 'tl-card' + (i === 1 ? ' active' : '');
+    b.innerHTML = '<span class="tl-period">' + pd.name + '</span>' +
+      '<span class="tl-brief">付款后 ' + CalcModel.fmtWan(pd.afterPayRaw) + ' 万' +
+      (pd.funding > 0 ? ' · 融资 ' + CalcModel.fmtWan(pd.funding) : '') + '</span>';
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.tl-card').forEach(function (x) { x.classList.remove('active'); });
+      b.classList.add('active');
+      showDetail(i);
+    });
+    tl.appendChild(b);
+  });
+
+  function line(k, v, cls) {
+    return '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px dashed #d4dbe8;">' +
+      '<span style="color:#445;">' + k + '</span>' +
+      '<span class="' + (cls || 'c-gray') + '" style="font-family:monospace;font-weight:700;">' + v + '</span></div>';
+  }
+
+  function showDetail(i) {
+    var pd = P.periods[i];
+    var html = '<div style="font-weight:800;margin-bottom:6px;">' + pd.name + ' · 资金明细（万元）</div>';
+    html += line('回款', CalcModel.fmtWan(pd.inflow), 'c-green');
+    html += line('付品牌货款', '−' + CalcModel.fmtWan(pd.brandPay), 'c-orange');
+    html += line('付到岸费用', '−' + CalcModel.fmtWan(pd.landingPay), 'c-orange');
+    html += line('付进口增值税', '−' + CalcModel.fmtWan(pd.importVat), 'c-gray');
+    html += line('常规费用（含人力）', '−' + CalcModel.fmtWan(pd.regularOpex), 'c-orange');
+    html += line('付款前现金', CalcModel.fmtWan(pd.beforePay), pd.beforePay < 0 ? 'c-red' : 'c-gray');
+    html += line('付货款后（未融资）', CalcModel.fmtWan(pd.afterPayRaw), 'c-red');
+    html += line('即时融资补足', '+' + CalcModel.fmtWan(pd.funding), 'c-blue');
+    html += line('时段末现金', CalcModel.fmtWan(pd.endCash), 'c-green');
+    document.getElementById('detail').innerHTML = html;
+  }
+  showDetail(1);
+
+  // 利润 → 现金调节
+  var steps = [
+    { k: '账面净利', v: r.netProfit, cls: 'c-red' },
+    { k: '加 折旧', v: r.depreciation, cls: 'c-purple' },
+    { k: '减 库存增加', v: -r.inventoryChange, cls: 'c-purple' },
+    { k: '减 资本支出', v: -r.capex, cls: 'c-purple' },
+    { k: '减 押金', v: -r.deposit, cls: 'c-purple' },
+  ];
+  var recon = '';
+  steps.forEach(function (s) {
+    recon += line(s.k, (s.v >= 0 ? '+' : '') + CalcModel.fmtWan(s.v), s.cls);
+  });
+  recon += '<div style="display:flex;justify-content:space-between;padding:8px 0 2px;font-weight:800;">' +
+    '<span>净现金流</span><span class="c-red" style="font-family:monospace;">' + CalcModel.fmtWan(r.netCash) + '</span></div>';
+  document.getElementById('recon').innerHTML = recon;
+})();
+</script>
 </body>
 </html>

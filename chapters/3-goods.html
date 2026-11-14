@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>第3件事 · 要买多少货</title>
+<title>第3件事 · 货备多少</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -18,106 +18,125 @@
 </div>
 
 <div class="wrap">
-  <div class="chapter-kicker">第 03 件事</div>
-  <h1>要买多少货</h1>
-  <p class="lead">渠道分好了，那要向品牌方订多少货？是卖多少订多少吗？</p>
+  <div class="chapter-kicker">第 03 件事 · 货</div>
+  <h1>备多少货，压多少库存</h1>
 
-  <div class="problem">
-    <div class="tag">这一件事要解决</div>
-    <p>订的货<strong>不会 100% 卖完</strong>。卖多少和买多少，中间隔着一个关键变量：售罄率。</p>
+  <!-- 顶部结论卡 -->
+  <div class="concl">
+    <span class="concl-tag">第一年 · 结论先行</span>
+    <div><span class="concl-big" id="c-buy">—</span><span class="concl-unit">万现金采购</span></div>
+    <div class="concl-sub">其中 <strong id="c-inv">—</strong> 万，到年末还压在库里没卖掉。</div>
   </div>
 
-  <p>先讲一个最朴素的事实：你这一季打算卖 100 万的新货（按售价算），但经验告诉你大概只能卖出 50%。那你实际要备的货，按售价算是 <strong>100 ÷ 50% = 200 万</strong>，不是 100 万。先记住这个 200 万——它说的是「这些货卖出去值多少」，还不是你掏钱的数，真正掏多少要按成本算，往下看。</p>
+  <p>代理是<strong>期货生意</strong>：货不是卖完再补，是提前半年按商品季下单，先付全款、再等货、再卖。所以「备多少」直接决定要先掏多少现金。</p>
 
-  <div class="insight">
-    <span class="lbl">反直觉的第一课</span>
-    <p>售罄率越低（卖得越慢），要订的货越多。因为你要「多备一倍的货」，才能保证「卖出一份」。这就是「卖得越慢，订单越大」。</p>
-  </div>
-
-  <p>那备这 200 万（售价）的货，实际要掏多少钱？订货不是按「售价」付，是按「成本」付。直营货值毛利率 65%，意味着卖 100 元的货，成本只要 35 元。合起来就是核心公式：</p>
-
-  <div class="formula">新货采购额 ≈ 新货销售额 ×（1 − 毛利率）÷ 售罄率</div>
-
-  <h2>动手拖一拖</h2>
-  <p class="subtle">按「要卖 100 万新货」演示，这里暂未含到岸附加费用。拖两个滑块，看订货和库存怎么变，风险怎么跳。</p>
+  <h2>拖售罄率：卖不掉的，全变成库存</h2>
+  <p class="subtle">售罄率 = 进的货里，当季卖掉的比例。卖得越差，为了达成同样的销售目标，就得进越多货。</p>
 
   <div class="card widget">
-    <div class="slider-row"><label>售罄率（卖出比例）</label><input type="range" id="st" min="30" max="90" step="5" value="50"><span class="val" id="st-val">50%</span></div>
-    <div class="slider-row"><label>货值毛利率</label><input type="range" id="gm" min="40" max="80" step="5" value="65"><span class="val" id="gm-val">65%</span></div>
-
-    <div class="metric-grid">
-      <div class="metric"><div class="k">要卖的新货</div><div class="v flat">100</div><div class="u">万元</div></div>
-      <div class="metric"><div class="k">要订的货（成本）</div><div class="v" id="m-buy">—</div><div class="u">万元</div></div>
-      <div class="metric"><div class="k">卖完剩下的库存</div><div class="v" id="m-stock">—</div><div class="u">万元</div></div>
+    <div class="slider-row">
+      <label>DTC 售罄率</label>
+      <input type="range" id="st" min="30" max="80" step="1" value="50">
+      <span class="val" id="st-val">50%</span>
+    </div>
+    <div class="slider-row">
+      <label>老库存消化比例</label>
+      <input type="range" id="old" min="0" max="30" step="1" value="0">
+      <span class="val" id="old-val">0%</span>
     </div>
 
-    <p class="subtle" style="margin:14px 0 6px;">想卖出 1 份，实际得备 <strong id="mv-mult">—</strong> 份（绿 = 卖掉的，橙 = 多备压着的）：</p>
-    <div class="mv-boxes" id="mv-boxes"></div>
-
-    <div class="risks" id="risks"></div>
+    <div class="metric-grid">
+      <div class="metric"><div class="k">品牌货款</div><div class="v c-orange" id="m-brand">—</div><div class="u">万元</div></div>
+      <div class="metric"><div class="k">到岸费用</div><div class="v c-orange" id="m-land">—</div><div class="u">万元</div></div>
+      <div class="metric"><div class="k">采购含到岸</div><div class="v c-orange" id="m-buy">—</div><div class="u">万元</div></div>
+      <div class="metric"><div class="k">年末库存</div><div class="v c-purple" id="m-inv">—</div><div class="u">万元</div></div>
+    </div>
+    <p class="subtle" style="margin-top:8px;">老库存是往年没卖完的货，能消化一部分，就少进一点新货；但第一年没有老库存，所以默认 0。</p>
   </div>
 
-  <script src="../js/calc.js"></script>
-  <script src="../js/site.js"></script>
-  <script>
-  (function(){
-    function render(){
-      var st=parseInt(document.getElementById('st').value,10)/100;
-      var gm=parseInt(document.getElementById('gm').value,10)/100;
-      document.getElementById('st-val').textContent=Math.round(st*100)+'%';
-      document.getElementById('gm-val').textContent=Math.round(gm*100)+'%';
+  <h2>到岸的 13.27%，是怎么一层层加上来的</h2>
+  <p class="subtle">品牌货款之外，货从海外运到国内，还要加运保、关税、清关。以品牌货值 100 为起点：</p>
 
-      var sell=100, buy=sell*(1-gm)/st, cogs=sell*(1-gm), stock=buy-cogs;
-      document.getElementById('m-buy').textContent=buy.toFixed(1);
-      document.getElementById('m-stock').textContent=stock.toFixed(1);
-      document.getElementById('m-stock').style.color = stock>30 ? '#d92c2c' : '#1c2333';
-
-      // 备货倍数方块：卖出 1 份要备 1/st 份
-      var mult=1/st;
-      document.getElementById('mv-mult').textContent=mult.toFixed(2);
-      var nBox=Math.ceil(mult), boxesHtml='';
-      for(var i=0;i<nBox;i++){
-        var fill=1;
-        if(i===nBox-1){ fill=mult-(nBox-1); if(fill<0.05) fill=1; }
-        var style = fill<1 ? ' style="background:linear-gradient(90deg,#e8913a '+(fill*100).toFixed(0)+'%,#f0f2f6 '+(fill*100).toFixed(0)+'%)"' : '';
-        boxesHtml+='<span class="mv-box '+(i===0?'sold':'extra')+'"'+style+'></span>';
-      }
-      document.getElementById('mv-boxes').innerHTML=boxesHtml;
-
-      var r=CalcModel.compute({revenue:2000, dtcMargin:gm, sellThrough:st});
-      var risks=CalcModel.assessRisk(r).filter(function(x){
-        return ['库存积压','平行进口 / 海淘风险'].indexOf(x.title)>-1;
-      });
-      Site.renderRisks(document.getElementById('risks'), risks);
-    }
-    document.getElementById('st').addEventListener('input',render);
-    document.getElementById('gm').addEventListener('input',render);
-    render();
-  })();
-  </script>
-
-  <div class="note">
-    <strong>两个季节别忘了：</strong>一年分 SS（春夏，3—8 月）和 FW（秋冬，9—次年 2 月）。FW 横跨两年，所以「今年」和「这一季」会对不上——这一季 FW 卖到明年 1、2 月，算哪一年的账？这是后面讲「钱」时要重点处理的。
+  <div class="card widget">
+    <div class="landing-wf">
+      <div class="lw-row">
+        <div class="lw-name">品牌货款</div>
+        <div class="lw-track"><div class="lw-fill" style="width:88.28%;background:#2f9e6b;">100</div></div>
+        <div class="lw-num c-green">100</div>
+      </div>
+      <div class="lw-row">
+        <div class="lw-name">+ 国际运保 3%<span class="lw-add">货值×3%</span></div>
+        <div class="lw-track"><div class="lw-fill" style="width:90.93%;background:#5b93d8;">103</div></div>
+        <div class="lw-num c-blue">103</div>
+      </div>
+      <div class="lw-row">
+        <div class="lw-name">+ 关税 9.27%<span class="lw-add">CIF 103×9%</span></div>
+        <div class="lw-track"><div class="lw-fill" style="width:99.12%;background:#e8913a;">112.27</div></div>
+        <div class="lw-num c-orange">112.27</div>
+      </div>
+      <div class="lw-row">
+        <div class="lw-name">+ 清关 1%<span class="lw-add">货值×1%</span></div>
+        <div class="lw-track"><div class="lw-fill" style="width:100%;background:#c0561f;">113.27</div></div>
+        <div class="lw-num c-orange">113.27</div>
+      </div>
+    </div>
+    <p class="subtle" style="margin-top:6px;">综合到岸率 = 3% + 9.27% + 1% = <strong class="c-orange">13.27%</strong>。第一年品牌货款 1454 万，到岸费用约 193 万。</p>
   </div>
 
-  <p>货备好了，下一个问题自然就来了——</p>
+  <div class="insight">
+    <span class="lbl">分销的货，默认 100% 卖完</span>
+    <p>分销客户是现款提货、不能退货，模型里假设它们 100% 提货，所以分销的货不压在我们的库存里。这是个偏乐观的简化——真实里分销也会卖不动、压价、要支持。</p>
+  </div>
+
+  <div class="warn">
+    <span class="lbl">这是非常简化的版本</span>
+    <p>关税是按来源国加权平均的 9%，真实要按每个 SKU 的 HS 编码、原产地、贸易条款逐笔算；运保、清关也会随品类、港口、汇率波动。真实情况更复杂，成本通常更高。</p>
+  </div>
 
   <div class="problem">
     <div class="tag">引出下一件事</div>
-    <p>货铺进渠道了，凭什么让消费者<strong>掏钱买</strong>？这笔「让人想买」的钱，怎么花、又最容易在哪算错？</p>
+    <p>货备好了，怎么让客户看到、下单？<strong>流量和推广，要花多少钱。</strong></p>
   </div>
 
   <div class="pager">
     <a href="2-field.html">
       <div class="dir">上一件事</div>
-      <div class="t">场 · 货从哪几条路卖</div>
+      <div class="t">渠道 · 怎么拆</div>
     </a>
     <a href="4-traffic.html" class="next">
       <div class="dir">下一件事</div>
-      <div class="t">人 · 流量从哪来</div>
+      <div class="t">流量成本 · 推广怎么花</div>
     </a>
   </div>
 </div>
 
+<script src="../js/calc.js"></script>
+<script>
+(function () {
+  var stEl = document.getElementById('st');
+  var oldEl = document.getElementById('old');
+
+  function render() {
+    var st = parseInt(stEl.value, 10) / 100;
+    var old = parseInt(oldEl.value, 10) / 100;
+    document.getElementById('st-val').textContent = (st * 100).toFixed(0) + '%';
+    document.getElementById('old-val').textContent = (old * 100).toFixed(0) + '%';
+
+    var r = CalcModel.compute({ revenue: 2000, sellThrough: st, oldPct: old });
+
+    document.getElementById('c-buy').textContent = CalcModel.fmtWan(r.purchaseInclLanding);
+    document.getElementById('c-inv').textContent = CalcModel.fmtWan(r.inventory);
+
+    document.getElementById('m-brand').textContent = CalcModel.fmtWan(r.brandPayment);
+    document.getElementById('m-land').textContent = CalcModel.fmtWan(r.landing);
+    document.getElementById('m-buy').textContent = CalcModel.fmtWan(r.purchaseInclLanding);
+    document.getElementById('m-inv').textContent = CalcModel.fmtWan(r.inventory);
+  }
+
+  stEl.addEventListener('input', render);
+  oldEl.addEventListener('input', render);
+  render();
+})();
+</script>
 </body>
 </html>

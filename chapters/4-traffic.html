@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>第4件事 · 流量从哪来</title>
+<title>第4件事 · 流量成本</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -18,119 +18,142 @@
 </div>
 
 <div class="wrap">
-  <div class="chapter-kicker">第 04 件事</div>
-  <h1>流量从哪来</h1>
-  <p class="lead">货铺好了，「能卖」和「有人买」之间，还隔着一件事：让人知道、让人想买。</p>
+  <div class="chapter-kicker">第 04 件事 · 流量成本</div>
+  <h1>推广怎么吞掉毛利</h1>
 
-  <div class="problem">
-    <div class="tag">这一件事要解决</div>
-    <p>「花钱让人买」其实是<strong>两笔性质不同的钱</strong>，很多人混成一笔，结果不是重复算，就是漏算。</p>
+  <!-- 顶部结论卡 -->
+  <div class="concl">
+    <span class="concl-tag">第一年 · 结论先行</span>
+    <div><span class="concl-big" id="c-flow">—</span><span class="concl-unit">万流量采购</span></div>
+    <div class="concl-sub">品牌推广 <strong id="c-promo">—</strong> 万 + 线上投流 <strong id="c-ad">—</strong> 万。这还<strong>不含</strong>线下门店租金、商场扣点。</div>
   </div>
 
-  <table>
-    <tr><th style="width:22%;"></th><th>品牌推广</th><th>线上投流</th></tr>
-    <tr><td><strong>目的</strong></td><td>让人「知道并认可」这个品牌</td><td>让人「当场点进来买」</td></tr>
-    <tr><td><strong>花在哪</strong></td><td>广告、内容、公关、种草、活动</td><td>天猫 / 京东等平台效果广告</td></tr>
-    <tr><td><strong>性质</strong></td><td>长期、打地基</td><td>短期、买流量</td></tr>
-  </table>
+  <p>货不会自己卖出去。让客户看到、点进来、下单，得花钱买流量。这里头有两笔大钱，性质不一样。</p>
 
-  <div class="warn">
-    <span class="lbl">最容易犯的错</span>
-    <p>把「品牌推广」和「平台投流」当成一回事，加两次或漏一次。记住：<strong>品牌推广打的是长期认知，投流买的是短期流量，各算各的，别混。</strong></p>
+  <div class="insight">
+    <span class="lbl">两笔钱，分清楚</span>
+    <p><strong>品牌推广</strong>是打认知、做内容、搞活动，按全部收入的比例算；<strong>线上投流</strong>是买广告位、买曝光，只跟线上收入挂钩。</p>
   </div>
 
-  <h2>品牌推广怎么算：先按费率估</h2>
-  <p class="subtle">起步阶段常用「费率法」——按收入的固定比例拨一笔预算。拖一拖，看它吃掉了多少毛利。</p>
+  <h2>拖费率，看成本怎么变</h2>
 
   <div class="card widget">
-    <div class="slider-row"><label>品牌推广费率（按总收入）</label><input type="range" id="pr" min="5" max="25" step="1" value="15"><span class="val" id="pr-val">15%</span></div>
-    <div class="slider-row"><label>线上投流费率（按 DTC 收入）</label><input type="range" id="ad" min="5" max="35" step="1" value="20"><span class="val" id="ad-val">20%</span></div>
-    <div class="slider-row"><label>含税收入目标</label><input type="range" id="rev" min="1000" max="5000" step="100" value="2000"><span class="val" id="rev-val">2000 万</span></div>
-
-    <div class="metric-grid">
-      <div class="metric"><div class="k">品牌推广预算</div><div class="v" id="m-promo">—</div><div class="u">万元</div></div>
-      <div class="metric"><div class="k">线上投流预算</div><div class="v" id="m-ad">—</div><div class="u">万元</div></div>
-      <div class="metric"><div class="k">两笔合计占收入</div><div class="v" id="m-mktrate">—</div><div class="u">%</div></div>
+    <div class="slider-row">
+      <label>品牌推广费率（×全收入）</label>
+      <input type="range" id="pr" min="5" max="25" step="1" value="15">
+      <span class="val" id="pr-val">15%</span>
+    </div>
+    <div class="slider-row">
+      <label>线上投流费率（×线上收入）</label>
+      <input type="range" id="ar" min="10" max="30" step="1" value="20">
+      <span class="val" id="ar-val">20%</span>
     </div>
 
-    <p class="subtle" style="margin:14px 0 6px;">看 928 万毛利，是怎么被各项费用一格格吃掉的：</p>
-    <div class="waterfall" id="waterfall"></div>
+    <div class="toggle-row">
+      <label class="switch">
+        <input type="checkbox" id="stable">
+        <span class="slider-sw"></span>
+      </label>
+      <span class="toggle-label">进入「稳态」假设
+        <small>品牌成熟后，推广降到 10%、投流降到 15%</small>
+      </span>
+    </div>
 
-    <div class="risks" id="risks"></div>
+    <div class="metric-grid">
+      <div class="metric"><div class="k">品牌推广</div><div class="v c-orange" id="m-promo">—</div><div class="u">万元</div></div>
+      <div class="metric"><div class="k">线上投流</div><div class="v c-orange" id="m-ad">—</div><div class="u">万元</div></div>
+    </div>
   </div>
 
-  <script src="../js/calc.js"></script>
-  <script src="../js/site.js"></script>
-  <script>
-  (function(){
-    function render(){
-      var pr=parseInt(document.getElementById('pr').value,10)/100;
-      var adr=parseInt(document.getElementById('ad').value,10)/100;
-      var rev=parseInt(document.getElementById('rev').value,10);
-      document.getElementById('pr-val').textContent=Math.round(pr*100)+'%';
-      document.getElementById('ad-val').textContent=Math.round(adr*100)+'%';
-      document.getElementById('rev-val').textContent=rev+' 万';
-      var r=CalcModel.compute({revenue:rev, promoRate:pr, adRate:adr});
-      document.getElementById('m-promo').textContent=CalcModel.fmtWan(r.promo,0);
-      document.getElementById('m-ad').textContent=CalcModel.fmtWan(r.ad,0);
-      var mktRate=(r.promo+r.ad)/rev*100;
-      document.getElementById('m-mktrate').textContent=mktRate.toFixed(0);
-      document.getElementById('m-mktrate').style.color = mktRate>30 ? '#d92c2c' : '#1c2333';
-
-      // 毛利瀑布图：看各项费用怎么吃掉毛利
-      var wfItems=[
-        {label:'货品毛利', val:r.grossProfit, type:'base'},
-        {label:'品牌推广', val:r.promo, type:'cost'},
-        {label:'线上投流', val:r.ad, type:'cost'},
-        {label:'店铺运营', val:r.storeOpex, type:'cost'},
-        {label:'后台其他', val:r.backoffice, type:'cost'},
-        {label:'人员成本', val:r.staff, type:'cost'},
-        {label:'分销服务', val:r.distService, type:'cost'},
-        {label:'净利润', val:r.netProfit, type:'result'}
-      ];
-      var maxV=r.grossProfit, wfHtml='';
-      wfItems.forEach(function(it){
-        var pct=Math.min(100,Math.abs(it.val)/maxV*100);
-        wfHtml+='<div class="wf-row wf-'+it.type+'"><span class="wf-label">'+it.label+'</span>'
-          +'<span class="wf-track"><span class="wf-bar" style="width:'+pct.toFixed(1)+'%"></span></span>'
-          +'<span class="wf-num">'+it.val.toFixed(0)+'</span></div>';
-      });
-      document.getElementById('waterfall').innerHTML=wfHtml;
-
-      var risks=CalcModel.assessRisk(r).filter(function(x){
-        return ['费用吃毛利'].indexOf(x.title)>-1;
-      });
-      Site.renderRisks(document.getElementById('risks'), risks);
-    }
-    document.getElementById('pr').addEventListener('input',render);
-    document.getElementById('ad').addEventListener('input',render);
-    document.getElementById('rev').addEventListener('input',render);
-    render();
-  })();
-  </script>
+  <h2>毛利瀑布：927 万毛利，被吃掉一大块</h2>
+  <div class="card widget">
+    <div class="waterfall" id="wf"></div>
+    <p class="subtle" style="margin-top:8px;">毛利 927.9 万，光推广加投流就花掉 <strong class="c-orange" id="wf-eat">—</strong> 万，剩下的还得再付运营、人力，才到利润。</p>
+  </div>
 
   <div class="note">
-    <strong>提醒：</strong>费率法只是「按比例拨预算」的粗算法，等你有了明确的活动计划，再换成「场次 × 单价」的项目明细法——两套只选一套，别相加。
+    <strong>为了简化，费率假设未来 5 年都按这个比例。</strong>真实里不同年份、不同平台的打法会变，费率会上下浮动；这里先固定一个数，把「流量很贵」这件事想明白。默认第一年推广 15%、投流 20%，稳态后才降到 10%、15%。
   </div>
 
-  <p>钱要花，活要有人干——</p>
+  <div class="warn">
+    <span class="lbl">这些成本，模型里没算</span>
+    <p>线下商场的扣点，本质是商场帮你引流的成本；分销开店还要大量装修、支持费用。这些都先忽略，所以真实的流量成本只会更高。</p>
+  </div>
 
   <div class="problem">
     <div class="tag">引出下一件事</div>
-    <p>直播要天天开、内容要天天出、门店要有人守……这些活，<strong>要招多少人、发多少工资</strong>？</p>
+    <p>除了买流量，还有一块大成本：<strong>人。要招多少人、发多少工资。</strong></p>
   </div>
 
   <div class="pager">
     <a href="3-goods.html">
       <div class="dir">上一件事</div>
-      <div class="t">货 · 要买多少货</div>
+      <div class="t">货 · 备多少</div>
     </a>
     <a href="5-people.html" class="next">
       <div class="dir">下一件事</div>
-      <div class="t">底层·人 · 要多少人</div>
+      <div class="t">人成本 · 多少人</div>
     </a>
   </div>
 </div>
 
+<script src="../js/calc.js"></script>
+<script>
+(function () {
+  var prEl = document.getElementById('pr');
+  var arEl = document.getElementById('ar');
+  var stableEl = document.getElementById('stable');
+
+  function wfRow(cls, label, val, max) {
+    var w = Math.max(2, val / max * 100);
+    return '<div class="wf-row ' + cls + '">' +
+      '<div class="wf-label">' + label + '</div>' +
+      '<div class="wf-track"><span class="wf-bar" style="width:' + w.toFixed(1) + '%"></span></div>' +
+      '<div class="wf-num">' + CalcModel.fmtWan(val) + '</div></div>';
+  }
+
+  function render() {
+    var promoRate, adRate;
+    if (stableEl.checked) {
+      promoRate = 0.10; adRate = 0.15;
+      prEl.value = 10; arEl.value = 15;
+      prEl.disabled = true; arEl.disabled = true;
+    } else {
+      promoRate = parseInt(prEl.value, 10) / 100;
+      adRate = parseInt(arEl.value, 10) / 100;
+      prEl.disabled = false; arEl.disabled = false;
+    }
+    document.getElementById('pr-val').textContent = (promoRate * 100).toFixed(0) + '%';
+    document.getElementById('ar-val').textContent = (adRate * 100).toFixed(0) + '%';
+
+    var r = CalcModel.compute({ revenue: 2000, promoRate: promoRate, adRate: adRate });
+
+    // 结论卡 + 数字卡
+    document.getElementById('c-flow').textContent = CalcModel.fmtWan(r.promo + r.ad);
+    document.getElementById('c-promo').textContent = CalcModel.fmtWan(r.promo);
+    document.getElementById('c-ad').textContent = CalcModel.fmtWan(r.ad);
+    document.getElementById('m-promo').textContent = CalcModel.fmtWan(r.promo);
+    document.getElementById('m-ad').textContent = CalcModel.fmtWan(r.ad);
+
+    // 瀑布
+    var max = r.revExcl;
+    var after = r.grossProfit - r.promo - r.ad;
+    var html =
+      wfRow('wf-base', '不含税收入', r.revExcl, max) +
+      wfRow('wf-cost', '减 已售成本', r.cogs, max) +
+      wfRow('wf-base', '毛利', r.grossProfit, max) +
+      wfRow('wf-cost', '减 品牌推广', r.promo, max) +
+      wfRow('wf-cost', '减 线上投流', r.ad, max) +
+      wfRow(after < 0 ? 'wf-result' : 'wf-cost', '扣费后剩余', after, max);
+    document.getElementById('wf').innerHTML = html;
+    document.getElementById('wf-eat').textContent = CalcModel.fmtWan(r.promo + r.ad);
+  }
+
+  prEl.addEventListener('input', render);
+  arEl.addEventListener('input', render);
+  stableEl.addEventListener('change', render);
+  render();
+})();
+</script>
 </body>
 </html>
