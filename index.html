@@ -23,7 +23,19 @@
     <p>先别急着往下翻。第一年的真实结局，就摆在下面。</p>
   </div>
 
-  <!-- 结局钩子：三个大数字，由引擎实时算（简化口径） -->
+  <!-- 极端假设：最理想口径，必须显著可见 -->
+  <div class="assume">
+    <div class="assume-head">先说清楚：这是「最理想」的极端假设，不是真实情况</div>
+    <ul class="assume-list">
+      <li>所有货都假设在<strong>东南亚生产</strong></li>
+      <li><strong>零关税</strong>，入关只代征 13% 增值税（不进成本、可抵扣）</li>
+      <li><strong>零国际运费、零国内运费</strong></li>
+      <li><strong>零清关服务费</strong></li>
+    </ul>
+    <p class="assume-note">真实业务里，关税、运费、清关费、货品损耗样样要花钱，情况更复杂、数字只会更差。先看最理想都这么难，才知道做业务不容易。</p>
+  </div>
+
+  <!-- 结局钩子：三个大数字，由引擎实时算（最理想口径） -->
   <div class="hook-cards" id="hook">
     <div class="hook">
       <div class="hk">含税收入</div>
@@ -33,7 +45,7 @@
     <div class="hook-arrow">→</div>
     <div class="hook">
       <div class="hk">账面净利润</div>
-      <div class="hv c-red" id="h-np">—</div>
+      <div class="hv" id="h-np">—</div>
       <div class="hu">万元</div>
     </div>
     <div class="hook-arrow">→</div>
@@ -46,12 +58,12 @@
 
   <div class="warn">
     <span class="lbl">这还是把人力算便宜了</span>
-    <p>上面的利润、现金，用的是<strong>混合工资 21.6 万/人</strong>的简化口径。按真实逐岗薪酬，第一年净利润 <strong>-151 万</strong>、净现金流 <strong>-956 万</strong>，只会更难看。</p>
+    <p>上面的利润、现金，用的是<strong>混合工资 21.6 万/人</strong>的简化口径。按真实逐岗薪酬，第一年净利润 <strong>-90.4 万</strong>、净现金流 <strong>-785.2 万</strong>，只会更难看。</p>
   </div>
 
   <div class="insight">
     <span class="lbl">先记住这三个反差</span>
-    <p>卖了 <strong>2000 万</strong>，账面却在<strong>亏钱</strong>；账上的那点利润，和兜里的现金，<strong>完全不是一回事</strong>；业务要往前走，得先<strong>垫一大笔钱</strong>。这门课，就是把这三件事讲明白。</p>
+    <p>卖了 <strong>2000 万</strong>，账面只赚 <strong>6.5 万</strong>，几乎不赚钱；账上这点利润，和兜里的现金，<strong>完全不是一回事</strong>（赚 6.5 万，现金却少 686 万）；业务要往前走，得先<strong>垫一大笔钱</strong>。这门课，就是把这三件事讲明白。</p>
   </div>
 
   <h2>七个片段，碎片时间各刷一段</h2>
@@ -71,7 +83,7 @@
     <li><a href="chapters/3-goods.html" data-ch="3">
       <div class="num">3</div>
       <div class="body"><div class="ttl">货 · 备多少、压多少库存</div>
-      <div class="desc">到岸、关税、售罄，都是简化假设。</div></div>
+      <div class="desc">零关税运费、售罄、损耗，都是简化假设。</div></div>
     </a></li>
     <li><a href="chapters/4-traffic.html" data-ch="4">
       <div class="num">4</div>
@@ -108,6 +120,7 @@
   var r = CalcModel.compute();
   document.getElementById('h-rev').textContent = CalcModel.fmtInt(r.revTaxIncl);
   document.getElementById('h-np').textContent = CalcModel.fmtWan(r.netProfit);
+  document.getElementById('h-np').className = 'hv ' + (r.netProfit >= 0 ? 'c-green' : 'c-red');
   document.getElementById('h-nc').textContent = CalcModel.fmtWan(r.netCash);
 })();
 </script>

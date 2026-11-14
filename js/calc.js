@@ -1,17 +1,19 @@
 /* ============================================================
-   独家代理业务预算 · 教学计算引擎（重构版）
+   独家代理业务预算 · 教学计算引擎（最理想口径版）
    ------------------------------------------------------------
    单位：人民币万元（除特别注明）。
    这是一个「建立财务直觉」的简化模型，不是申报口径。
+   极端假设（首页写清楚）：零关税、零国际运费、零清关服务费，
+   入关只代征增值税；所有货品假设东南亚生产。这是最理想的下限，
+   真实有关税、有运费、有损耗，只会更坏。
    核心机制（对照 Excel 模板逐格核对）：
    1. 货品按「完整商品季」算采购——服装一年两季 SS/FW，
       FW 当年只确认 75%、25% 跨年，但货款今年就要全额付；
    2. 已售成本按「自然年」确认，库存走会计恒等式：
-      期末库存 = 期初库存 + 本期采购(含到岸) − 本期已售；
+      期末库存 = 期初库存 + 本期采购 − 本期已售；
    3. 人员按业务量反推，再按 4:1 自动拆基础/管理岗；
    4. 现金流分 1—2 月、3—8 月、9—12 月三个时段，
       还原「提货前 25 天全额付款」的节点缺口。
-   默认参数下，货品采购、已售、库存与 Excel 第一年完全对齐。
    简化会低估人力成本（逐岗薪酬更高），文中已明确标注。
    ============================================================ */
 
@@ -27,13 +29,17 @@
     fwCurrent: 0.75,        // FW 直营当年确认比例（25% 跨年到次年 1—2 月）
     dtcMargin: 0.65,        // DTC 新货货值毛利率
     distMargin: 0.30,       // 分销货值毛利率
-    landingRate: 0.1327,    // 综合到岸附加率（运保+关税+清关）
+    landingRate: 0,         // 最理想假设：零关税、零国际运费、零清关服务费（入关只代征增值税）
     basicAnnual: 18,        // 基础岗全年公司成本（税前 1 万/月 ×1.5×12）
     managerAnnual: 36,      // 管理岗全年公司成本（税前 2 万/月 ×1.5×12）
     managerRatio: 0.20,     // 管理岗占比（4 基础 : 1 管理）
     blendedAnnual: 21.6,    // 混合人均年成本（18×0.8 + 36×0.2）
-    onlineOpexRate: 0.09,   // 线上运营费率（除投流：佣金/履约/其他，×线上含税）
+    onlineOpexRate: 0.09,   // 线上运营费率合计（除投流，×线上含税）
+    platformCommissionRate: 0.03, // 平台佣金与服务费（×线上含税）
+    warehouseFulfillRate: 0.04,   // 仓储物流履约：收发货、退货处理（×线上含税，不含进口到岸）
+    otherOnlineRate: 0.02,        // 其他线上运营：软件、外协（×线上含税）
     adRate: 0.20,           // 线上投流费率（5 年固定，×线上含税）
+    wastageRate: 0.01,      // 货品损耗率（退货破损、展示样衣核销，×不含税收入）
     storeAnnualOpex: 100,   // 单店年线下运营（含租金物业，×等价店，不含商场扣点）
     storeCapex: 100,        // 新店装修设备（每店，一次性）
     storeDeposit: 18,       // 新店租赁押金（每店，一次性）
@@ -191,11 +197,14 @@
     const distCogs = distExcl * (1 - C.distMargin) * (1 + C.landingRate);
     const cogs = dtcCogs + distCogs;
 
-    // ---------- 5. 库存（会计恒等式）----------
-    const openingInventory = prev ? prev.inventory : 0;
-    const inventory = openingInventory + purchaseInclLanding - cogs;
+    // ---------- 5. 货品损耗（退货破损、展示样衣核销，非现金：货值核销）----------
+    const wastage = revExcl * C.wastageRate;
 
-    // ---------- 6. 毛利 ----------
+    // ---------- 6. 库存（会计恒等式：损耗核销库存）----------
+    const openingInventory = prev ? prev.inventory : 0;
+    const inventory = openingInventory + purchaseInclLanding - cogs - wastage;
+
+    // ---------- 7. 毛利 ----------
     const grossProfit = revExcl - cogs;
     const grossMargin = revExcl > 0 ? grossProfit / revExcl : 0;
 
@@ -207,7 +216,10 @@
       ? p.adRate : adRateOf(stable);
     const promo = revTaxIncl * promoRate;                        // 品牌推广（全收入）
     const ad = onlineTaxIncl * adRate;                           // 线上投流（仅线上）
-    const onlineOpex = onlineTaxIncl * C.onlineOpexRate;         // 线上运营（佣金/履约/其他）
+    const platformCommission = onlineTaxIncl * C.platformCommissionRate; // 平台佣金与服务费
+    const warehouseFulfill = onlineTaxIncl * C.warehouseFulfillRate;     // 仓储物流履约（含退货处理）
+    const otherOnline = onlineTaxIncl * C.otherOnlineRate;               // 其他线上运营
+    const onlineOpex = platformCommission + warehouseFulfill + otherOnline; // 线上运营合计（=9%）
     const offlineOpex = equivStores * C.storeAnnualOpex;         // 线下运营（租金物业等）
     const distService = distTaxIncl * C.distServiceRate;         // 分销服务
     const backofficeOther = revExcl * C.backofficeRate;          // 后台其他
@@ -246,16 +258,27 @@
 
     // ---------- 10. 利润 ----------
     const totalOpex = promo + ad + onlineOpex + offlineOpex
-      + distService + backofficeOther + commission + staffCost;
+      + distService + backofficeOther + commission + staffCost + wastage;
     const ebitda = grossProfit - totalOpex;
     const ebit = ebitda - depreciation;
-    const tax = ebit > 0 ? ebit * C.taxRate : 0;
+    // 所得税：本年盈利先弥补以前年度亏损，余额再计税
+    // （《企业所得税法》第 18 条，亏损可结转 5 年；本场景 5 年内不涉及过期）
+    const prevLossCarry = prev ? prev.taxLossCarry : 0;
+    let taxLossCarry;
+    let tax;
+    if (ebit <= 0) {
+      tax = 0;
+      taxLossCarry = prevLossCarry + (-ebit);
+    } else {
+      const used = Math.min(prevLossCarry, ebit);
+      tax = (ebit - used) * C.taxRate;
+      taxLossCarry = prevLossCarry - used;
+    }
     const netProfit = ebit - tax;
 
     // ---------- 11. 现金流（年度，不含融资）----------
-    // 进口增值税：完税价格 = 品牌货款×(1+运保3%)×(1+关税9%) = 品牌货款×1.1227
-    // （不含清关费），再 ×13%
-    const importVat = brandPayment * 1.1227 * C.vat;
+    // 进口增值税：最理想口径，完税价格 = 品牌货款（零运保、零关税），入关只代征 ×13%
+    const importVat = brandPayment * C.vat;
     // 销售增值税：销项税 − 进口可抵（费用进项默认 0，故只减进口 VAT）
     const outputVat = revTaxIncl * C.vat / (1 + C.vat);
     const salesVat = Math.max(0, outputVat - importVat);
@@ -286,13 +309,14 @@
       cogs, dtcCogs, distCogs, openingInventory, inventory,
       grossProfit, grossMargin,
       // 费用
-      promo, ad, onlineOpex, offlineOpex, distService,
-      backofficeOther, commission,
+      promo, ad, platformCommission, warehouseFulfill, otherOnline,
+      onlineOpex, offlineOpex, distService,
+      backofficeOther, commission, wastage,
       // 人员
       hcOffline, hcPlatformOps, hcDouyin, hcOnline, hcBackoffice,
       headcount, managers, basics, staffCost,
       // 利润
-      totalOpex, ebitda, depreciation, ebit, tax, netProfit,
+      totalOpex, ebitda, depreciation, ebit, tax, netProfit, taxLossCarry,
       // 现金
       importVat, outputVat, salesVat, inventoryChange,
       capex, deposit, capexPool, netCash, cumNetCash, fundNeed,
@@ -472,8 +496,8 @@
     }
 
     risks.push({
-      level: 'note', title: '简化口径',
-      text: '到岸、关税、人力均为预算估值。真实关税按 HS 编码与原产地核定，逐岗薪酬更高，隐性费用没算——真实只会更坏。'
+      level: 'note', title: '最理想口径',
+      text: '已假设零关税、零运费、零清关费，只代征增值税。真实有关税、运费、退货和展示损耗，逐岗薪酬也更高——真实只会更坏。'
     });
 
     return risks;

@@ -25,10 +25,10 @@
   <div class="concl">
     <span class="concl-tag">第一年收口</span>
     <div style="display:flex;gap:30px;flex-wrap:wrap;">
-      <div><span class="concl-big c-red" id="y1-np">—</span><span class="concl-unit">万账面净利</span></div>
+      <div><span class="concl-big" id="y1-np">—</span><span class="concl-unit">万账面净利</span></div>
       <div><span class="concl-big c-red" id="y1-nc">—</span><span class="concl-unit">万净现金</span></div>
     </div>
-    <div class="concl-sub">卖 2000 万，账上亏 <strong id="y1-np2">—</strong> 万，兜里现金少了 <strong id="y1-nc2">—</strong> 万。这就是第一年的真实结局。</div>
+    <div class="concl-sub">卖 2000 万，账上勉强赚 <strong id="y1-np2">—</strong> 万，兜里现金却少了 <strong id="y1-nc2">—</strong> 万。账面那点利润，跟缺的现金比，几乎不算什么。</div>
   </div>
 
   <h2>如果连续做 5 年，会怎样</h2>
@@ -45,9 +45,17 @@
       </span>
     </div>
 
-    <div style="overflow-x:auto;">
+    <div class="table-scroll">
       <table class="big-table" id="bigtable"></table>
+      <div class="scroll-hint" aria-hidden="true">左右滑动看 5 年 ›</div>
     </div>
+  </div>
+
+  <div class="warn">
+    <span class="lbl">这张表还漏了三块，加上利润只会更难看</span>
+    <p style="margin:0 0 7px;"><strong>1. 融资利息没算。</strong>2700 多万是借来的，按 5% 年息，一年利息就上百万。模型只算了本金，没算利息。</p>
+    <p style="margin:0 0 7px;"><strong>2. 存货跌价没提。</strong>老库存放久了、卖不动，按《企业会计准则第 1 号》要按成本与可变现净值孰低计提跌价准备，直接减利润，模型没提。</p>
+    <p style="margin:0;"><strong>3. 损耗的进项税没转出。</strong>若是管理不善导致的损耗，按规定进口进项要转出、不能抵扣，模型按正常损耗全额抵扣了。</p>
   </div>
 
   <h2>三个累计大数字</h2>
@@ -121,6 +129,7 @@
     // 第一年收口
     var y1 = years[0];
     document.getElementById('y1-np').textContent = CalcModel.fmtWan(y1.netProfit);
+    document.getElementById('y1-np').className = 'concl-big ' + (y1.netProfit >= 0 ? 'c-green' : 'c-red');
     document.getElementById('y1-nc').textContent = CalcModel.fmtWan(y1.netCash);
     document.getElementById('y1-np2').textContent = CalcModel.fmtWan(y1.netProfit);
     document.getElementById('y1-nc2').textContent = CalcModel.fmtWan(y1.netCash);
@@ -150,6 +159,16 @@
 
   stableEl.addEventListener('change', render);
   render();
+
+  // 横滑提示：滚到底（或本就不需要滑）时隐藏
+  var scroller = document.querySelector('.table-scroll');
+  function syncHint() {
+    var atEnd = scroller.scrollLeft + scroller.clientWidth >= scroller.scrollWidth - 6;
+    scroller.classList.toggle('is-end', atEnd);
+  }
+  scroller.addEventListener('scroll', syncHint);
+  window.addEventListener('resize', syncHint);
+  syncHint();
 })();
 </script>
 </body>

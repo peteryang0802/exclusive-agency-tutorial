@@ -127,6 +127,21 @@ strong { font-weight: 700; }
 .warn .lbl { font-weight: 800; color: var(--warn); font-size: 13px; display: block; margin-bottom: 3px; }
 .warn p { margin: 0; font-size: 15.5px; }
 
+/* ---------- 极端假设声明（最理想口径，显著可见） ---------- */
+.assume {
+  background: #f4f1fc; border: 1px solid #d8cdf5; border-left: 5px solid #7a3fa0;
+  padding: 16px 18px; border-radius: var(--radius-sm); margin: 20px 0;
+}
+.assume-head { font-weight: 800; color: #5b2d86; font-size: 16px; margin-bottom: 8px; }
+.assume-list { list-style: none; margin: 0; padding: 0; }
+.assume-list li { position: relative; padding: 7px 0 7px 30px; font-size: 15px; border-bottom: 1px dashed #e0d6f5; }
+.assume-list li:last-child { border-bottom: none; }
+.assume-list li::before {
+  content: '假设'; position: absolute; left: 0; top: 8px; font-size: 11px; font-weight: 800;
+  color: #fff; background: #7a3fa0; padding: 2px 6px; border-radius: 5px;
+}
+.assume-note { margin: 10px 0 0; font-size: 13.5px; color: #6b5b85; line-height: 1.55; }
+
 /* ---------- 实时风险提醒 ---------- */
 .risks { margin: 18px 0; }
 .risks .risks-title { font-weight: 700; font-size: 15px; margin-bottom: 8px; color: var(--warn); }
@@ -151,7 +166,16 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-fam
 tr:last-child td { border-bottom: none; }
 
 /* 5 年大表 */
-.big-table { font-size: 13.5px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+.table-scroll { position: relative; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: var(--radius); }
+.big-table { min-width: 560px; font-size: 13.5px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+/* 右侧横滑提示：渐变遮罩 + 小字，滚到底自动淡出 */
+.scroll-hint {
+  position: absolute; top: 0; right: 0; bottom: 0; display: flex; align-items: center;
+  padding: 0 12px; font-size: 12px; font-weight: 700; color: #fff; pointer-events: none;
+  background: linear-gradient(90deg, rgba(23,61,120,0), rgba(23,61,120,.92) 45%);
+  border-top-right-radius: var(--radius); border-bottom-right-radius: var(--radius);
+}
+.table-scroll.is-end .scroll-hint { display: none; }
 .big-table th, .big-table td { text-align: right; font-family: var(--mono); white-space: nowrap; }
 .big-table th:first-child, .big-table td:first-child { text-align: left; font-family: var(--body); }
 .big-table thead th { background: #173d78; color: #fff; font-weight: 700; border-bottom: none; }
@@ -289,6 +313,25 @@ button.btn.ghost:hover { background: var(--brand-soft); }
 .wf-result .wf-bar { background: var(--warn); }
 .wf-result .wf-num { color: var(--warn); }
 .wf-result .wf-label { font-weight: 800; color: var(--ink); }
+
+/* 明细行列表（费用拆分） */
+.line-list { margin: 4px 0; }
+.ll-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid #eef0f4; }
+.ll-row:last-child { border-bottom: none; }
+.ll-name { flex: 1; font-size: 14.5px; color: var(--ink-2); }
+.ll-val { flex: 0 0 60px; text-align: right; font-family: var(--mono); font-size: 14px; font-weight: 700; }
+.ll-u { flex: 0 0 18px; font-size: 12px; color: var(--ink-3); }
+.ll-total { border-top: 2px solid #d8dde6; margin-top: 2px; }
+.ll-total .ll-name { font-weight: 800; color: var(--ink); }
+.ll-total .ll-val { font-size: 15px; }
+
+/* 人力占比对照表 */
+.ratio-table { width: 100%; min-width: 520px; font-size: 13px; border-collapse: collapse; }
+.ratio-table th, .ratio-table td { text-align: center; padding: 8px 4px; font-family: var(--mono); white-space: nowrap; }
+.ratio-table th:first-child, .ratio-table td:first-child { text-align: left; font-family: var(--body); }
+.ratio-table thead th { background: #173d78; color: #fff; font-weight: 700; }
+.ratio-table tbody tr { border-bottom: 1px solid #eef0f4; }
+.ratio-table td.c-red { color: var(--c-red); font-weight: 700; }
 
 /* ---------- 到岸累加瀑布（逐段累计百分比） ---------- */
 .landing-wf { margin: 14px 0 8px; }
@@ -456,7 +499,7 @@ button.btn { min-height: 44px; }
   .slider-row label { flex: 0 0 100%; font-size: 14px; }
   .slider-row .val { flex: 0 0 auto; }
 
-  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table:not(.big-table) { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
   th, td { padding: 8px 10px; font-size: 13.5px; }
 
   .metric-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }

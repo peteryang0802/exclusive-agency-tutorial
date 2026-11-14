@@ -46,41 +46,45 @@
     </div>
 
     <div class="metric-grid">
-      <div class="metric"><div class="k">品牌货款</div><div class="v c-orange" id="m-brand">—</div><div class="u">万元</div></div>
-      <div class="metric"><div class="k">到岸费用</div><div class="v c-orange" id="m-land">—</div><div class="u">万元</div></div>
-      <div class="metric"><div class="k">采购含到岸</div><div class="v c-orange" id="m-buy">—</div><div class="u">万元</div></div>
+      <div class="metric"><div class="k">品牌货款（采购）</div><div class="v c-orange" id="m-brand">—</div><div class="u">万元</div></div>
+      <div class="metric"><div class="k">货品损耗（1%，货值核销）</div><div class="v c-orange" id="m-waste">—</div><div class="u">万元</div></div>
+      <div class="metric"><div class="k">现金采购（到岸费用为 0）</div><div class="v c-orange" id="m-buy">—</div><div class="u">万元</div></div>
       <div class="metric"><div class="k">年末库存</div><div class="v c-purple" id="m-inv">—</div><div class="u">万元</div></div>
     </div>
-    <p class="subtle" style="margin-top:8px;">老库存是往年没卖完的货，能消化一部分，就少进一点新货；但第一年没有老库存，所以默认 0。</p>
+    <p class="subtle" style="margin-top:8px;">老库存是往年没卖完的货，能消化一部分，就少进一点新货；但第一年没有老库存，所以默认 0。往后各年取的是 15%—30% 的中间值，这是个主观估计——老货卖不了太多，取个不偏不倚的数。到岸费用为 0，是因为用了零关税、零运费、零清关的极端假设。</p>
   </div>
 
-  <h2>到岸的 13.27%，是怎么一层层加上来的</h2>
-  <p class="subtle">品牌货款之外，货从海外运到国内，还要加运保、关税、清关。以品牌货值 100 为起点：</p>
+  <h2>最理想口径：货从出厂到入库，一分钱不加</h2>
+  <p class="subtle">以品牌货值 100 为起点，看每一项到岸成本。注意下面三个 0，全是极端假设，不是真实情况：</p>
 
   <div class="card widget">
     <div class="landing-wf">
       <div class="lw-row">
         <div class="lw-name">品牌货款</div>
-        <div class="lw-track"><div class="lw-fill" style="width:88.28%;background:#2f9e6b;">100</div></div>
+        <div class="lw-track"><div class="lw-fill" style="width:80%;background:#2f9e6b;">100</div></div>
         <div class="lw-num c-green">100</div>
       </div>
       <div class="lw-row">
-        <div class="lw-name">+ 国际运保 3%<span class="lw-add">货值×3%</span></div>
-        <div class="lw-track"><div class="lw-fill" style="width:90.93%;background:#5b93d8;">103</div></div>
-        <div class="lw-num c-blue">103</div>
+        <div class="lw-name">国际运保 <span class="lw-add">假设为 0</span></div>
+        <div class="lw-track"><div class="lw-fill" style="width:80%;background:#5b93d8;">+0</div></div>
+        <div class="lw-num c-blue">100</div>
       </div>
       <div class="lw-row">
-        <div class="lw-name">+ 关税 9.27%<span class="lw-add">CIF 103×9%</span></div>
-        <div class="lw-track"><div class="lw-fill" style="width:99.12%;background:#e8913a;">112.27</div></div>
-        <div class="lw-num c-orange">112.27</div>
+        <div class="lw-name">关税 <span class="lw-add">东南亚生产，假设为 0</span></div>
+        <div class="lw-track"><div class="lw-fill" style="width:80%;background:#e8913a;">+0</div></div>
+        <div class="lw-num c-orange">100</div>
       </div>
       <div class="lw-row">
-        <div class="lw-name">+ 清关 1%<span class="lw-add">货值×1%</span></div>
-        <div class="lw-track"><div class="lw-fill" style="width:100%;background:#c0561f;">113.27</div></div>
-        <div class="lw-num c-orange">113.27</div>
+        <div class="lw-name">清关服务费 <span class="lw-add">假设为 0</span></div>
+        <div class="lw-track"><div class="lw-fill" style="width:80%;background:#c0561f;">+0</div></div>
+        <div class="lw-num c-orange">100</div>
       </div>
     </div>
-    <p class="subtle" style="margin-top:6px;">综合到岸率 = 3% + 9.27% + 1% = <strong class="c-orange">13.27%</strong>。第一年品牌货款 1454 万，到岸费用约 193 万。</p>
+    <p class="subtle" style="margin-top:8px;">综合到岸率 = <strong class="c-orange">0</strong>，所以现金采购就等于品牌货款 <strong id="lw-buy">1454</strong> 万，没有额外到岸钱。</p>
+    <div class="note" style="margin-top:10px;">
+      <p style="margin:0 0 6px;"><strong>入关不是什么都不交：</strong>海关按品牌货款代征 <strong>13% 增值税</strong>（约 189 万），但这是价外税、能拿进项发票抵扣，不进成本，也不是费用。</p>
+      <p style="margin:0;"><strong>那 1% 货品损耗（约 18 万）是另一回事：</strong>它是退回来的破损货、展示样衣的货值核销，跟到岸费用不重复，直接减库存、计费用。</p>
+    </div>
   </div>
 
   <div class="insight">
@@ -89,8 +93,8 @@
   </div>
 
   <div class="warn">
-    <span class="lbl">这是非常简化的版本</span>
-    <p>关税是按来源国加权平均的 9%，真实要按每个 SKU 的 HS 编码、原产地、贸易条款逐笔算；运保、清关也会随品类、港口、汇率波动。真实情况更复杂，成本通常更高。</p>
+    <span class="lbl">真实的到岸，一项都少不了</span>
+    <p>这里把关税、国际运费、清关费全设成 0，是刻意做的最理想下限。真实要按每个 SKU 的 HS 编码、原产地、贸易条款逐笔算关税，运保、清关也随品类、港口、汇率波动。这些钱加回来，成本只会更高，不会更低。</p>
   </div>
 
   <div class="problem">
@@ -128,9 +132,10 @@
     document.getElementById('c-inv').textContent = CalcModel.fmtWan(r.inventory);
 
     document.getElementById('m-brand').textContent = CalcModel.fmtWan(r.brandPayment);
-    document.getElementById('m-land').textContent = CalcModel.fmtWan(r.landing);
+    document.getElementById('m-waste').textContent = CalcModel.fmtWan(r.wastage);
     document.getElementById('m-buy').textContent = CalcModel.fmtWan(r.purchaseInclLanding);
     document.getElementById('m-inv').textContent = CalcModel.fmtWan(r.inventory);
+    document.getElementById('lw-buy').textContent = CalcModel.fmtWan(r.purchaseInclLanding, 0);
   }
 
   stEl.addEventListener('input', render);

@@ -41,12 +41,17 @@
   <div class="card widget">
     <p class="subtle" style="margin:0 0 6px;">从账面净利，一步步调到真实现金流：</p>
     <div id="recon"></div>
-    <p class="subtle" style="margin-top:10px;">关键就在那 <strong class="c-purple">805 万库存</strong>：货已经花钱买了，但还没卖掉、没结成本，所以它不影响利润，却实实在在把现金掏走了。这就是「账上没亏多少，兜里却没钱」的原因。</p>
+    <p class="subtle" style="margin-top:10px;">关键就在那 <strong class="c-purple"><span id="rc-inv">—</span> 万库存</strong>：货已经花钱买了，但还没卖掉、没结成本，所以它不影响利润，却实实在在把现金掏走了。这就是「账上没赚多少，兜里却没钱」的原因。</p>
   </div>
 
   <div class="warn">
     <span class="lbl">想靠往年的净现金？不现实</span>
-    <p>第一年净现金是 −877 万，本身就在烧钱。业务还要继续扩张，开店、备货、招人都要再投入，资金缺口只会更大，指望往年攒下的钱来填，根本填不上。</p>
+    <p>第一年净现金是 <strong><span id="rc-nc">—</span> 万</strong>，本身就在烧钱。业务还要继续扩张，开店、备货、招人都要再投入，资金缺口只会更大，指望往年攒下的钱来填，根本填不上。</p>
+  </div>
+
+  <div class="warn">
+    <span class="lbl">借来的钱，还要付利息</span>
+    <p>模型只展示了要补多少本金，没算融资利息。按 5% 年息粗估，随融资额从 686 涨到 2700 万，每年利息从 34 万涨到 136 万。这笔钱是真实的现金流出，加进来利润和现金只会更差。</p>
   </div>
 
   <div class="problem">
@@ -75,6 +80,8 @@
   // 结论卡
   document.getElementById('c-gap').textContent = CalcModel.fmtWan(P.worstGap);
   document.getElementById('c-fund').textContent = CalcModel.fmtWan(P.totalFunding);
+  document.getElementById('rc-inv').textContent = CalcModel.fmtWan(r.inventory);
+  document.getElementById('rc-nc').textContent = CalcModel.fmtWan(r.netCash);
 
   // 时段卡
   var tl = document.getElementById('tl');
@@ -116,7 +123,7 @@
 
   // 利润 → 现金调节
   var steps = [
-    { k: '账面净利', v: r.netProfit, cls: 'c-red' },
+    { k: '账面净利', v: r.netProfit, cls: r.netProfit >= 0 ? 'c-green' : 'c-red' },
     { k: '加 折旧', v: r.depreciation, cls: 'c-purple' },
     { k: '减 库存增加', v: -r.inventoryChange, cls: 'c-purple' },
     { k: '减 资本支出', v: -r.capex, cls: 'c-purple' },

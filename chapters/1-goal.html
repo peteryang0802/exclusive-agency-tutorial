@@ -64,7 +64,7 @@
       <span class="i"><span class="sw" style="background:#6b7280;"></span>增值税（13%，要上缴） <b id="lg-vat">—</b> 万</span>
     </div>
 
-    <p class="subtle" style="margin-top:10px;">那 230 万增值税是<strong>替国家代收的钱</strong>，不是你的收入，很快要缴出去。所以别拿含税数字当自己能花的钱。</p>
+    <p class="subtle" style="margin-top:10px;">这 230 万是<strong>销项增值税，替国家代收的钱</strong>，不是你的收入。后面进货拿到的进项税能抵掉一部分（实际要缴 <span id="m-salesvat">—</span> 万），但不管抵多少，都别拿含税数字当自己能花的钱。</p>
   </div>
 
   <div class="insight">
@@ -117,6 +117,7 @@
     document.getElementById('seg-vat').textContent = CalcModel.fmtWan(vat);
     document.getElementById('lg-rev').textContent = CalcModel.fmtWan(r.revExcl);
     document.getElementById('lg-vat').textContent = CalcModel.fmtWan(vat);
+    document.getElementById('m-salesvat').textContent = CalcModel.fmtWan(r.salesVat);
   }
 
   slider.addEventListener('input', render);

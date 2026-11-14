@@ -65,10 +65,22 @@
     </div>
   </div>
 
-  <h2>毛利瀑布：927 万毛利，被吃掉一大块</h2>
+  <h2>毛利瀑布：毛利被吃掉一大块</h2>
   <div class="card widget">
     <div class="waterfall" id="wf"></div>
-    <p class="subtle" style="margin-top:8px;">毛利 927.9 万，光推广加投流就花掉 <strong class="c-orange" id="wf-eat">—</strong> 万，剩下的还得再付运营、人力，才到利润。</p>
+    <p class="subtle" style="margin-top:8px;">毛利 <strong id="wf-gp">—</strong> 万，光推广加投流就花掉 <strong class="c-orange" id="wf-eat">—</strong> 万，剩下的还得再付运营、人力，才到利润。</p>
+  </div>
+
+  <h2>线上运营那 9%，拆开看是这三笔</h2>
+  <p class="subtle">除了推广、投流，线上生意还要付平台佣金、仓储物流和杂项。以线上 1600 万为基数，三笔加起来正好 9%：</p>
+  <div class="card widget">
+    <div class="line-list" id="opex-list">
+      <div class="ll-row"><div class="ll-name">平台佣金与服务费（3%）</div><div class="ll-val c-orange" id="ol-comm">—</div><div class="ll-u">万</div></div>
+      <div class="ll-row"><div class="ll-name">仓储物流履约（4%，含收发货、退货处理）</div><div class="ll-val c-orange" id="ol-wh">—</div><div class="ll-u">万</div></div>
+      <div class="ll-row"><div class="ll-name">其他线上运营（2%，软件、外协）</div><div class="ll-val c-orange" id="ol-other">—</div><div class="ll-u">万</div></div>
+      <div class="ll-row ll-total"><div class="ll-name">线上运营合计（9%）</div><div class="ll-val c-orange" id="ol-sum">—</div><div class="ll-u">万</div></div>
+    </div>
+    <p class="subtle" style="margin-top:8px;">仓储物流这 4% 里已经含退货处理，所以退货不再另收钱，不会重复。</p>
   </div>
 
   <div class="note">
@@ -146,7 +158,14 @@
       wfRow('wf-cost', '减 线上投流', r.ad, max) +
       wfRow(after < 0 ? 'wf-result' : 'wf-cost', '扣费后剩余', after, max);
     document.getElementById('wf').innerHTML = html;
+    document.getElementById('wf-gp').textContent = CalcModel.fmtWan(r.grossProfit);
     document.getElementById('wf-eat').textContent = CalcModel.fmtWan(r.promo + r.ad);
+
+    // 线上运营三行拆分
+    document.getElementById('ol-comm').textContent = CalcModel.fmtWan(r.platformCommission);
+    document.getElementById('ol-wh').textContent = CalcModel.fmtWan(r.warehouseFulfill);
+    document.getElementById('ol-other').textContent = CalcModel.fmtWan(r.otherOnline);
+    document.getElementById('ol-sum').textContent = CalcModel.fmtWan(r.onlineOpex);
   }
 
   prEl.addEventListener('input', render);
