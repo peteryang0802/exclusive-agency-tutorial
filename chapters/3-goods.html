@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第3件事 · 要买多少货</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="dot">独家代理</span> · 业务分析入门</div>
+    <div class="crumb">第 3 件事 / 7</div>
+    <div class="spacer"></div>
+    <a class="home" href="../index.html">首页</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="chapter-kicker">第 03 件事</div>
+  <h1>要买多少货</h1>
+  <p class="lead">渠道分好了，那要向品牌方订多少货？是卖多少订多少吗？</p>
+
+  <div class="problem">
+    <div class="tag">这一件事要解决</div>
+    <p>订的货<strong>不会 100% 卖完</strong>。卖多少和买多少，中间隔着一个关键变量：售罄率。</p>
+  </div>
+
+  <p>先讲一个最朴素的事实：你这一季打算卖 100 万的新货（按售价算），但经验告诉你大概只能卖出 50%。那你实际要备的货，按售价算是 <strong>100 ÷ 50% = 200 万</strong>，不是 100 万。先记住这个 200 万——它说的是「这些货卖出去值多少」，还不是你掏钱的数，真正掏多少要按成本算，往下看。</p>
+
+  <div class="insight">
+    <span class="lbl">反直觉的第一课</span>
+    <p>售罄率越低（卖得越慢），要订的货越多。因为你要「多备一倍的货」，才能保证「卖出一份」。这就是「卖得越慢，订单越大」。</p>
+  </div>
+
+  <p>那备这 200 万（售价）的货，实际要掏多少钱？订货不是按「售价」付，是按「成本」付。直营货值毛利率 65%，意味着卖 100 元的货，成本只要 35 元。合起来就是核心公式：</p>
+
+  <div class="formula">新货采购额 ≈ 新货销售额 ×（1 − 毛利率）÷ 售罄率</div>
+
+  <h2>动手拖一拖</h2>
+  <p class="subtle">按「要卖 100 万新货」演示，这里暂未含到岸附加费用。拖两个滑块，看订货和库存怎么变，风险怎么跳。</p>
+
+  <div class="card widget">
+    <div class="slider-row"><label>售罄率（卖出比例）</label><input type="range" id="st" min="30" max="90" step="5" value="50"><span class="val" id="st-val">50%</span></div>
+    <div class="slider-row"><label>货值毛利率</label><input type="range" id="gm" min="40" max="80" step="5" value="65"><span class="val" id="gm-val">65%</span></div>
+
+    <div class="metric-grid">
+      <div class="metric"><div class="k">要卖的新货</div><div class="v flat">100</div><div class="u">万元</div></div>
+      <div class="metric"><div class="k">要订的货（成本）</div><div class="v" id="m-buy">—</div><div class="u">万元</div></div>
+      <div class="metric"><div class="k">卖完剩下的库存</div><div class="v" id="m-stock">—</div><div class="u">万元</div></div>
+    </div>
+
+    <p class="subtle" style="margin:14px 0 6px;">想卖出 1 份，实际得备 <strong id="mv-mult">—</strong> 份（绿 = 卖掉的，橙 = 多备压着的）：</p>
+    <div class="mv-boxes" id="mv-boxes"></div>
+
+    <div class="risks" id="risks"></div>
+  </div>
+
+  <script src="../js/calc.js"></script>
+  <script src="../js/site.js"></script>
+  <script>
+  (function(){
+    function render(){
+      var st=parseInt(document.getElementById('st').value,10)/100;
+      var gm=parseInt(document.getElementById('gm').value,10)/100;
+      document.getElementById('st-val').textContent=Math.round(st*100)+'%';
+      document.getElementById('gm-val').textContent=Math.round(gm*100)+'%';
+
+      var sell=100, buy=sell*(1-gm)/st, cogs=sell*(1-gm), stock=buy-cogs;
+      document.getElementById('m-buy').textContent=buy.toFixed(1);
+      document.getElementById('m-stock').textContent=stock.toFixed(1);
+      document.getElementById('m-stock').style.color = stock>30 ? '#d92c2c' : '#1c2333';
+
+      // 备货倍数方块：卖出 1 份要备 1/st 份
+      var mult=1/st;
+      document.getElementById('mv-mult').textContent=mult.toFixed(2);
+      var nBox=Math.ceil(mult), boxesHtml='';
+      for(var i=0;i<nBox;i++){
+        var fill=1;
+        if(i===nBox-1){ fill=mult-(nBox-1); if(fill<0.05) fill=1; }
+        var style = fill<1 ? ' style="background:linear-gradient(90deg,#e8913a '+(fill*100).toFixed(0)+'%,#f0f2f6 '+(fill*100).toFixed(0)+'%)"' : '';
+        boxesHtml+='<span class="mv-box '+(i===0?'sold':'extra')+'"'+style+'></span>';
+      }
+      document.getElementById('mv-boxes').innerHTML=boxesHtml;
+
+      var r=CalcModel.compute({revenue:2000, dtcMargin:gm, sellThrough:st});
+      var risks=CalcModel.assessRisk(r).filter(function(x){
+        return ['库存积压','平行进口 / 海淘风险'].indexOf(x.title)>-1;
+      });
+      Site.renderRisks(document.getElementById('risks'), risks);
+    }
+    document.getElementById('st').addEventListener('input',render);
+    document.getElementById('gm').addEventListener('input',render);
+    render();
+  })();
+  </script>
+
+  <div class="note">
+    <strong>两个季节别忘了：</strong>一年分 SS（春夏，3—8 月）和 FW（秋冬，9—次年 2 月）。FW 横跨两年，所以「今年」和「这一季」会对不上——这一季 FW 卖到明年 1、2 月，算哪一年的账？这是后面讲「钱」时要重点处理的。
+  </div>
+
+  <p>货备好了，下一个问题自然就来了——</p>
+
+  <div class="problem">
+    <div class="tag">引出下一件事</div>
+    <p>货铺进渠道了，凭什么让消费者<strong>掏钱买</strong>？这笔「让人想买」的钱，怎么花、又最容易在哪算错？</p>
+  </div>
+
+  <div class="pager">
+    <a href="2-field.html">
+      <div class="dir">上一件事</div>
+      <div class="t">场 · 货从哪几条路卖</div>
+    </a>
+    <a href="4-traffic.html" class="next">
+      <div class="dir">下一件事</div>
+      <div class="t">人 · 流量从哪来</div>
+    </a>
+  </div>
+</div>
+
+</body>
+</html>

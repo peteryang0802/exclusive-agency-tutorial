@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第7件事 · 赚不赚、扛不扛</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="dot">独家代理</span> · 业务分析入门</div>
+    <div class="crumb">第 7 件事 / 7</div>
+    <div class="spacer"></div>
+    <a class="home" href="../index.html">首页</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="chapter-kicker">第 07 件事 · 收口</div>
+  <h1>到底赚不赚、扛不扛得住</h1>
+  <p class="lead">货、场、人、钱一路算下来，是时候把那个一路没敢问的问题，正式问出来了。</p>
+
+  <div class="problem">
+    <div class="tag">这一件事要解决</div>
+    <p>前六件事，你一直在算「规模」「成本」「费用」「现金」，唯独没算<strong>净利润</strong>。现在，把它揭出来——因为它是所有决策的最终裁判。</p>
+  </div>
+
+  <p>先回顾利润是怎么一步步算到净利润的：</p>
+
+  <div class="formula">货品毛利 = 不含税收入 − 已售成本</div>
+  <div class="formula">EBITDA = 货品毛利 − 各项经营费用</div>
+  <div class="formula">净利润 = EBITDA − 折旧 − 利息 − 所得税</div>
+
+  <div class="insight">
+    <span class="lbl">终于可以说了</span>
+    <p>按默认假设，2027 年的净利润是 <strong>−151 万</strong>。为什么亏？因为毛利 928 万，被推广、投流、店铺、人员这一长串费用吃光了，还倒贴。</p>
+  </div>
+
+  <h2>再揭开一个更深的真相：利润和现金差在哪</h2>
+  <p>净利润亏 151 万，但净现金流亏了 713 万。差的 561 万去哪了？</p>
+
+  <div class="insight">
+    <span class="lbl">答案</span>
+    <p>那 561 万，<strong>压在仓库里没卖掉的货里</strong>。利润只算「卖掉的货」，现金流却要算「买回来还没卖的货」。货买了、钱付了、货还没卖——这就是利润和现金的差距。</p>
+  </div>
+
+  <h2>五年摆在一起，是一张「很冷」的图</h2>
+
+  <table>
+    <tr><th>指标（万元）</th><th class="num">2027</th><th class="num">2028</th><th class="num">2029</th><th class="num">2030</th><th class="num">2031</th></tr>
+    <tr><td>含税收入</td><td class="num">2000</td><td class="num">3500</td><td class="num">6000</td><td class="num">9000</td><td class="num">12000</td></tr>
+    <tr><td>净利润</td><td class="num cell-warn">−151</td><td class="num cell-warn">−478</td><td class="num cell-warn">−656</td><td class="num cell-warn">−857</td><td class="num cell-warn">−1194</td></tr>
+    <tr><td>累计资金需求</td><td class="num cell-warn">1550</td><td class="num cell-warn">2925</td><td class="num cell-warn">4932</td><td class="num cell-warn">7424</td><td class="num cell-warn">9929</td></tr>
+  </table>
+
+  <div class="insight">
+    <span class="lbl">这张图在说一件大事</span>
+    <p>按默认假设，独家代理前五年是<strong>持续亏损、持续烧钱</strong>的生意：五年累计亏约 3300 多万（按表内净利润加总），累计要备的资金逼近 <strong>1 个亿</strong>。这不是「模型错了」，这是这类生意的真相——<strong>先重金买货、建渠道、打品牌，利润要等规模起来、售罄率上去、进入稳定期之后才谈得上。</strong></p>
+  </div>
+
+  <h2>最后，亲手把旋钮全拧一遍</h2>
+  <p class="subtle">这是完整模拟器。拖着看：哪个旋钮，能让那个「−151」翻正？</p>
+
+  <div class="note">
+    <strong>先打个预防针：</strong>拖「售罄率」的时候，你会发现净利润纹丝不动，只有净现金流在变。这不是 bug——售罄率管的是「备多少货、压多少现金」，卖掉的货成本不变，所以不碰利润。想救利润，得动收入、推广费率或人员成本。
+  </div>
+
+  <div class="card widget">
+    <div class="slider-row"><label>含税收入目标</label><input type="range" id="s-rev" min="1000" max="12000" step="100" value="2000"><span class="val" id="v-rev">2000 万</span></div>
+    <div class="slider-row"><label>DTC 售罄率</label><input type="range" id="s-st" min="30" max="90" step="5" value="50"><span class="val" id="v-st">50%</span></div>
+    <div class="slider-row"><label>品牌推广费率</label><input type="range" id="s-pr" min="5" max="25" step="1" value="15"><span class="val" id="v-pr">15%</span></div>
+    <div class="slider-row"><label>人员成本</label><input type="range" id="s-stf" min="100" max="800" step="10" value="280"><span class="val" id="v-stf">280 万</span></div>
+
+    <div class="metric-grid">
+      <div class="metric"><div class="k">净利润</div><div class="v" id="m-np">—</div><div class="u">万元</div></div>
+      <div class="metric"><div class="k">净现金流</div><div class="v" id="m-nc">—</div><div class="u">万元</div></div>
+      <div class="metric"><div class="k">要备的资金</div><div class="v" id="m-fn">—</div><div class="u">万元</div></div>
+    </div>
+
+    <div class="challenge" id="challenge"></div>
+
+    <div class="sim-actions">
+      <button class="btn ghost" id="reset-btn" type="button">重置默认假设</button>
+    </div>
+
+    <div class="risks" id="risks"></div>
+  </div>
+
+  <script src="../js/calc.js"></script>
+  <script src="../js/site.js"></script>
+  <script>
+  (function(){
+    function render(){
+      var rev=parseInt(document.getElementById('s-rev').value,10);
+      var st=parseInt(document.getElementById('s-st').value,10)/100;
+      var pr=parseInt(document.getElementById('s-pr').value,10)/100;
+      var stf=parseInt(document.getElementById('s-stf').value,10);
+      document.getElementById('v-rev').textContent=rev+' 万';
+      document.getElementById('v-st').textContent=Math.round(st*100)+'%';
+      document.getElementById('v-pr').textContent=Math.round(pr*100)+'%';
+      document.getElementById('v-stf').textContent=stf+' 万';
+      var r=CalcModel.compute({revenue:rev, sellThrough:st, promoRate:pr, staffCost:stf});
+      document.getElementById('m-np').textContent=CalcModel.fmtWan(r.netProfit,0);
+      document.getElementById('m-nc').textContent=CalcModel.fmtWan(r.netCash,0);
+      document.getElementById('m-fn').textContent=CalcModel.fmtWan(r.fundNeed,0);
+      document.getElementById('m-np').style.color = r.netProfit<0 ? '#d92c2c' : '#0e7a3d';
+      document.getElementById('m-nc').style.color = r.netCash<0 ? '#d92c2c' : '#0e7a3d';
+      document.getElementById('m-fn').style.color = '#d92c2c';
+
+      // 翻正挑战状态
+      var ch=document.getElementById('challenge');
+      if(r.netProfit<0){
+        ch.className='challenge lose';
+        ch.innerHTML='<span class="ch-badge">挑战未达成</span><span class="ch-text">还在亏损，距离净利润翻正还差 <strong>'+Math.abs(r.netProfit).toFixed(0)+'</strong> 万。试试压费用、提收入。</span>';
+      }else{
+        ch.className='challenge win';
+        var extra = r.netCash<0 ? '但净现金流仍为负（'+r.netCash.toFixed(0)+' 万），利润翻正了，钱还是紧——这正是利润和现金的区别。' : '利润和现金都转正了。';
+        ch.innerHTML='<span class="ch-badge">翻正成功</span><span class="ch-text">净利润 <strong>'+r.netProfit.toFixed(0)+'</strong> 万。'+extra+'</span>';
+      }
+
+      var risks=CalcModel.assessRisk(r).filter(function(x){
+        return ['持续亏损','现金流风险'].indexOf(x.title)>-1;
+      });
+      Site.renderRisks(document.getElementById('risks'), risks);
+    }
+    ['s-rev','s-st','s-pr','s-stf'].forEach(function(id){document.getElementById(id).addEventListener('input',render);});
+    document.getElementById('reset-btn').addEventListener('click',function(){
+      document.getElementById('s-rev').value=2000;
+      document.getElementById('s-st').value=50;
+      document.getElementById('s-pr').value=15;
+      document.getElementById('s-stf').value=280;
+      render();
+    });
+    render();
+  })();
+  </script>
+
+  <div class="problem">
+    <div class="tag">回到开头</div>
+    <p>还记得第一页那句话吗——<strong>预算不是数字，是把复杂系统拆成每个员工手里能盯住的那一个抓手。</strong>现在你走完了七步，应该明白了：盯住目标、场、货、人、钱这五件事，结果自然落进预期。而每一个数字背后，都压着现实的约束和风险。</p>
+  </div>
+
+  <div class="pager">
+    <a href="6-money.html">
+      <div class="dir">上一件事</div>
+      <div class="t">底层·钱 · 钱够不够</div>
+    </a>
+    <a href="../index.html" class="next">
+      <div class="dir">回到</div>
+      <div class="t">课程首页</div>
+    </a>
+  </div>
+</div>
+
+</body>
+</html>

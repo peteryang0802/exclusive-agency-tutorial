@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第2件事 · 货从哪几条路卖出去</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="dot">独家代理</span> · 业务分析入门</div>
+    <div class="crumb">第 2 件事 / 7</div>
+    <div class="spacer"></div>
+    <a class="home" href="../index.html">首页</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="chapter-kicker">第 02 件事</div>
+  <h1>货从哪几条路卖出去</h1>
+  <p class="lead">目标定了 2000 万，这些货，从哪几条路卖？</p>
+
+  <div class="problem">
+    <div class="tag">这一件事要解决</div>
+    <p>不能只靠一条路卖。要回答：<strong>分几条路、各分多少，而且每条路真的接得住。</strong></p>
+  </div>
+
+  <p>为什么不能「全押网店」？因为不同渠道，覆盖的人、赚的钱、担的风险，都不一样：</p>
+
+  <table>
+    <tr><th style="width:26%;">渠道</th><th>覆盖谁</th><th>毛利 / 轻重</th></tr>
+    <tr><td><strong>直营网店</strong>（天猫/抖音/京东）</td><td>全国、线上人群</td><td>毛利高，但要自己投流、运营</td></tr>
+    <tr><td><strong>直营线下店</strong>（含专柜）</td><td>本地、体验型人群</td><td>毛利高，但要房租、人、装修</td></tr>
+    <tr><td><strong>分销单品牌店</strong></td><td>只卖你这一个品牌的经销商</td><td>毛利低，但轻、起量快</td></tr>
+    <tr><td><strong>分销多品牌店</strong></td><td>集合店，你只是其中一席</td><td>毛利低，铺面广</td></tr>
+    <tr><td><strong>分销买手店</strong></td><td>小型选品店</td><td>毛利低，客户碎</td></tr>
+  </table>
+
+  <div class="insight">
+    <span class="lbl">本质</span>
+    <p>渠道组合，是在「赚得多但重」和「赚得少但轻」之间做搭配。全押重渠道，现金流吃紧；全押轻渠道，利润上不来。</p>
+  </div>
+
+  <h2>比例怎么分：切一块必须合上的蛋糕</h2>
+  <p class="subtle">五类渠道的比例加起来，必须是 100%。拖动看看，不齐会怎样。</p>
+
+  <div class="card widget">
+    <div class="slider-row"><label>直营网店</label><input type="range" id="c1" min="0" max="100" step="5" value="80"><span class="val" id="v1">80%</span></div>
+    <div class="slider-row"><label>直营线下店</label><input type="range" id="c2" min="0" max="100" step="5" value="0"><span class="val" id="v2">0%</span></div>
+    <div class="slider-row"><label>分销单品牌店</label><input type="range" id="c3" min="0" max="100" step="5" value="0"><span class="val" id="v3">0%</span></div>
+    <div class="slider-row"><label>分销多品牌店</label><input type="range" id="c4" min="0" max="100" step="5" value="15"><span class="val" id="v4">15%</span></div>
+    <div class="slider-row"><label>分销买手店</label><input type="range" id="c5" min="0" max="100" step="5" value="5"><span class="val" id="v5">5%</span></div>
+
+    <div id="bar" style="margin:16px 0;"></div>
+    <div style="font-size:15px;margin:8px 0;">合计：<strong id="sum">100%</strong>　·　分销部分约需 <strong id="cust">—</strong> 家客户来接</div>
+
+    <div class="heavy-light">
+      <div class="hl-bar"><span class="hl-heavy" id="hl-heavy"></span></div>
+      <div class="hl-legend">
+        <span><i class="dot-heavy"></i>重渠道（直营）<strong id="hl-hp">—</strong></span>
+        <span><i class="dot-light"></i>轻渠道（分销）<strong id="hl-lp">—</strong></span>
+      </div>
+      <p class="subtle" id="hl-note" style="margin:8px 0 0;"></p>
+    </div>
+
+    <div class="risks" id="risks"></div>
+  </div>
+
+  <script src="../js/calc.js"></script>
+  <script src="../js/site.js"></script>
+  <script>
+  (function(){
+    var ids=['c1','c2','c3','c4','c5'], vals=['v1','v2','v3','v4','v5'];
+    var labels=['直营网店','直营线下店','分销单品牌','分销多品牌','买手店'];
+    var colors=['#2f6fc4','#5b93d8','#e8913a','#e0a95c','#c9b27e'];
+    function render(){
+      var arr=[], total=0;
+      ids.forEach(function(id,i){
+        var v=parseInt(document.getElementById(id).value,10);
+        total+=v; arr.push({label:labels[i],value:v,color:colors[i]});
+        document.getElementById(vals[i]).textContent=v+'%';
+      });
+      document.getElementById('sum').textContent=total+'%';
+
+      var el=document.getElementById('bar'), w=el.clientWidth||680, h=40, x=0;
+      var svg='<svg width="100%" height="'+h+'" viewBox="0 0 '+w+' '+h+'">';
+      arr.forEach(function(b){
+        var bw=(b.value/100)*w;
+        svg+='<rect x="'+x+'" y="2" width="'+Math.max(0,bw-2)+'" height="'+(h-4)+'" rx="4" fill="'+b.color+'"/>';
+        if(b.value>=8) svg+='<text x="'+(x+bw/2)+'" y="'+(h/2+4)+'" font-size="12" fill="#fff" text-anchor="middle" font-weight="700">'+b.value+'%</text>';
+        x+=bw;
+      });
+      svg+='</svg>'; el.innerHTML=svg;
+
+      // 分销客户数粗略估算（多品牌店单客约 150 万）
+      var distPct=(parseInt(document.getElementById('c3').value,10)+parseInt(document.getElementById('c4').value,10)+parseInt(document.getElementById('c5').value,10))/100;
+      var cust=Math.ceil((2000*distPct)/150);
+      document.getElementById('cust').textContent=cust;
+
+      // 轻重渠道指示
+      var heavyPct=parseInt(document.getElementById('c1').value,10)+parseInt(document.getElementById('c2').value,10);
+      var lightPct=100-heavyPct;
+      document.getElementById('hl-heavy').style.width=heavyPct+'%';
+      document.getElementById('hl-hp').textContent=heavyPct+'%';
+      document.getElementById('hl-lp').textContent=lightPct+'%';
+      var note=document.getElementById('hl-note');
+      if(heavyPct>=80){ note.textContent='重渠道占比高，毛利高但现金压得紧，要盯备货和回款。'; }
+      else if(lightPct>=60){ note.textContent='轻渠道占比高，起量快、负担轻，但毛利薄，利润上不来。'; }
+      else { note.textContent='轻重搭配，兼顾毛利和现金，是相对稳的组合。'; }
+
+      var r=CalcModel.compute({
+        revenue:2000, chOnline:parseInt(document.getElementById('c1').value,10)/100,
+        chOffline:parseInt(document.getElementById('c2').value,10)/100,
+        chDistSingle:parseInt(document.getElementById('c3').value,10)/100,
+        chDistMulti:parseInt(document.getElementById('c4').value,10)/100,
+        chBuyer:parseInt(document.getElementById('c5').value,10)/100
+      });
+      var risks=CalcModel.assessRisk(r).filter(function(x){
+        return ['渠道结构错配'].indexOf(x.title)>-1;
+      });
+      Site.renderRisks(document.getElementById('risks'), risks);
+    }
+    ids.forEach(function(id){document.getElementById(id).addEventListener('input',render);});
+    render();
+  })();
+  </script>
+
+  <div class="note">
+    <strong>比例是「愿望」，客户数是「现实」。</strong>你给分销分了 400 万，就要问：手上有足够的经销商、买手店接得住吗？对不上，说明目标定高了，或渠道铺得不够。这里客户数按「单家平均提货 150 万」估算，是经验假设，实际要换成真实客户的合同额。
+  </div>
+
+  <p>渠道分好了。下一个问题紧跟着就来了——</p>
+
+  <div class="problem">
+    <div class="tag">引出下一件事</div>
+    <p>路有了，那<strong>要买多少货</strong>？是卖多少买多少，还是要多备一些？</p>
+  </div>
+
+  <div class="pager">
+    <a href="1-goal.html">
+      <div class="dir">上一件事</div>
+      <div class="t">目标 · 先定卖多少</div>
+    </a>
+    <a href="3-goods.html" class="next">
+      <div class="dir">下一件事</div>
+      <div class="t">货 · 要买多少货</div>
+    </a>
+  </div>
+</div>
+
+</body>
+</html>
