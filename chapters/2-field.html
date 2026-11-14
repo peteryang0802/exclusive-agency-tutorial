@@ -100,10 +100,11 @@
   var wrap = document.getElementById('sliders');
   CHS.forEach(function (c) {
     var row = document.createElement('div');
-    var locked = c.key === 'chOffline';
+    var lockNotes = { chOffline: '第一年不开店', chDistSingle: '不开直营门店，分销商不配合开店' };
+    var locked = c.key === 'chOffline' || c.key === 'chDistSingle';
     row.className = 'slider-row' + (locked ? ' is-locked' : '');
     row.innerHTML =
-      '<label>' + c.name + (locked ? '<small class="lock-note">第一年不开店</small>' : '') + '</label>' +
+      '<label>' + c.name + (locked ? '<small class="lock-note">' + lockNotes[c.key] + '</small>' : '') + '</label>' +
       '<input type="range" min="0" max="100" step="1" data-key="' + c.key + '"' + (locked ? ' disabled' : '') + '>' +
       '<span class="val" data-val="' + c.key + '">—</span>';
     wrap.appendChild(row);
