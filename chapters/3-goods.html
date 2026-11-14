@@ -82,8 +82,41 @@
     </div>
     <p class="subtle" style="margin-top:8px;">综合到岸率 = <strong class="c-orange">0</strong>，所以现金采购就等于品牌货款 <strong id="lw-buy">1454</strong> 万，没有额外到岸钱。</p>
     <div class="note" style="margin-top:10px;">
-      <p style="margin:0 0 6px;"><strong>入关不是什么都不交：</strong>海关按品牌货款代征 <strong>13% 增值税</strong>（约 189 万），但这是价外税、能拿进项发票抵扣，不进成本，也不是费用。</p>
+      <p style="margin:0 0 6px;"><strong>入关不是什么都不交：</strong>海关按品牌货款代征 <strong>13% 增值税</strong>（约 211 万），但这是价外税、能拿进项发票抵扣，不进成本，也不是费用。</p>
       <p style="margin:0;"><strong>那 1% 货品损耗（约 18 万）是另一回事：</strong>它是退回来的破损货、展示样衣的货值核销，跟到岸费用不重复，直接减库存、计费用。</p>
+    </div>
+  </div>
+
+  <h2>含税视角：一件货，怎么定出两个价</h2>
+  <p class="subtle">中国人讲价、看成本，习惯按含税来。以一件品牌货值 100（不含税）为例，先看它入仓的含税成本，再看怎么反推出网店零售价和分销批发价。</p>
+
+  <div class="card widget">
+    <div class="price-step">
+      <span class="ps-tag">第一步 · 入仓含税成本</span>
+      <div class="line-list">
+        <div class="ll-row"><div class="ll-name">品牌货值（不含税）</div><div class="ll-val c-green">100</div><div class="ll-u">元</div></div>
+        <div class="ll-row"><div class="ll-name">海关代征 13% 增值税（进项，先垫付）</div><div class="ll-val c-gray">+13</div><div class="ll-u">元</div></div>
+        <div class="ll-row ll-total"><div class="ll-name">入仓含税成本</div><div class="ll-val c-orange" id="p-cost">—</div><div class="ll-u">元</div></div>
+      </div>
+      <p class="subtle" style="margin:6px 0 0;">会计上这 13 块是进项、以后能抵扣，所以库存按不含税 100 入账；但掏钱、定价时，按含税的 113 来算，两套数字对得上。</p>
+    </div>
+
+    <div class="price-step">
+      <span class="ps-tag">第二步 · 按毛利率反推两个含税价</span>
+      <div class="price-grid">
+        <div class="price-card">
+          <div class="pc-name">平均含税零售价 <small>DTC 网店</small></div>
+          <div class="pc-formula" id="p-retail-formula">—</div>
+          <div class="pc-val c-green" id="p-retail">—</div>
+          <div class="pc-note" id="p-retail-note">—</div>
+        </div>
+        <div class="price-card">
+          <div class="pc-name">平均含税分销价 <small>批发</small></div>
+          <div class="pc-formula" id="p-dist-formula">—</div>
+          <div class="pc-val c-purple" id="p-dist">—</div>
+          <div class="pc-note" id="p-dist-note">—</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -136,6 +169,25 @@
     document.getElementById('m-buy').textContent = CalcModel.fmtWan(r.purchaseInclLanding);
     document.getElementById('m-inv').textContent = CalcModel.fmtWan(r.inventory);
     document.getElementById('lw-buy').textContent = CalcModel.fmtWan(r.purchaseInclLanding, 0);
+
+    // 含税价格体系（以一件不含税 100 为基准，数字随引擎参数走）
+    var base = 100;
+    var costIncl = base * (1 + CalcModel.C.vat);
+    var retailCostRate = 1 - CalcModel.C.dtcMargin;
+    var distCostRate = 1 - CalcModel.C.distMargin;
+    var retailIncl = costIncl / retailCostRate;
+    var distIncl = costIncl / distCostRate;
+    document.getElementById('p-cost').textContent = costIncl.toFixed(0);
+    document.getElementById('p-retail-formula').textContent = costIncl.toFixed(0) + ' ÷ ' + retailCostRate.toFixed(2);
+    document.getElementById('p-retail').textContent = retailIncl.toFixed(1);
+    document.getElementById('p-retail-note').textContent =
+      '毛利率 ' + (CalcModel.C.dtcMargin * 100).toFixed(0) + '%，成本占 ' + (retailCostRate * 100).toFixed(0) +
+      '%。这是消费者在网店实际付的含税价；因为有各种促销，取的是平均值。';
+    document.getElementById('p-dist-formula').textContent = costIncl.toFixed(0) + ' ÷ ' + distCostRate.toFixed(2);
+    document.getElementById('p-dist').textContent = distIncl.toFixed(1);
+    document.getElementById('p-dist-note').textContent =
+      '毛利率 ' + (CalcModel.C.distMargin * 100).toFixed(0) + '%，成本占 ' + (distCostRate * 100).toFixed(0) +
+      '%。这是分销商现款提货付的含税价。';
   }
 
   stEl.addEventListener('input', render);

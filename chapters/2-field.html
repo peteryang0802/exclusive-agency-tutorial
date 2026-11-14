@@ -32,7 +32,7 @@
 
   <div class="insight">
     <span class="lbl">为什么要拆这么细</span>
-    <p>直营毛利率高（65%），但货、店、人全得自己扛；分销毛利率低（30%），但走量、不压太多库存。渠道结构一变，后面的采购、人员、现金全跟着变。</p>
+    <p>直营毛利率高（60%），但货、店、人全得自己扛；分销毛利率低（30%），但走量、不压太多库存。渠道结构一变，后面的采购、人员、现金全跟着变。</p>
   </div>
 
   <h2>核心交互：占比加起来，必须正好 100%</h2>
@@ -100,10 +100,11 @@
   var wrap = document.getElementById('sliders');
   CHS.forEach(function (c) {
     var row = document.createElement('div');
-    row.className = 'slider-row';
+    var locked = c.key === 'chOffline';
+    row.className = 'slider-row' + (locked ? ' is-locked' : '');
     row.innerHTML =
-      '<label>' + c.name + '</label>' +
-      '<input type="range" min="0" max="100" step="1" data-key="' + c.key + '">' +
+      '<label>' + c.name + (locked ? '<small class="lock-note">第一年不开店</small>' : '') + '</label>' +
+      '<input type="range" min="0" max="100" step="1" data-key="' + c.key + '"' + (locked ? ' disabled' : '') + '>' +
       '<span class="val" data-val="' + c.key + '">—</span>';
     wrap.appendChild(row);
   });

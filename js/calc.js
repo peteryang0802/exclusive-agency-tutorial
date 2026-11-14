@@ -14,7 +14,7 @@
    3. 人员按业务量反推，再按 4:1 自动拆基础/管理岗；
    4. 现金流分 1—2 月、3—8 月、9—12 月三个时段，
       还原「提货前 25 天全额付款」的节点缺口。
-   简化会低估人力成本（逐岗薪酬更高），文中已明确标注。
+   简化会低估人力成本（有市场竞争力的细分岗位薪酬更高），文中已明确标注。
    ============================================================ */
 
 (function (global) {
@@ -27,7 +27,7 @@
     vat: 0.13,              // 增值税率（货物销售一般纳税人）
     ssShare: 0.35,          // SS 占 DTC 收入比例（FW 占 65%）
     fwCurrent: 0.75,        // FW 直营当年确认比例（25% 跨年到次年 1—2 月）
-    dtcMargin: 0.65,        // DTC 新货货值毛利率
+    dtcMargin: 0.60,        // DTC 新货货值毛利率
     distMargin: 0.30,       // 分销货值毛利率
     landingRate: 0,         // 最理想假设：零关税、零国际运费、零清关服务费（入关只代征增值税）
     basicAnnual: 18,        // 基础岗全年公司成本（税前 1 万/月 ×1.5×12）
@@ -159,6 +159,8 @@
 
     let dtcBuyBase = 0;
     let distBuyBaseTotal = 0;
+    let oldExclTotal = 0;
+    let dtcSeasonExclTotal = 0;
     const seasons = [
       { dtc: ssDtcTaxIncl, dist: ssDistTaxIncl },
       { dtc: fwDtcTaxIncl, dist: fwDistTaxIncl },
@@ -172,6 +174,8 @@
         openingInvBase / (1 - C.dtcMargin)
       );
       const newExcl = dtcSeasonExcl - oldExcl;
+      oldExclTotal += oldExcl;
+      dtcSeasonExclTotal += dtcSeasonExcl;
       // DTC 新货采购：新货不含税 × (1−毛利率) ÷ 售罄率
       const dtcBuy = newExcl * (1 - C.dtcMargin) / p.sellThrough;
       // 分销采购：分销不含税 × (1−分销毛利率)
@@ -293,6 +297,8 @@
     const cumNetCash = prevCumCash + netCash;
     const fundNeed = Math.max(0, -cumNetCash) + C.cashBuffer;
 
+    const oldPctActual = dtcSeasonExclTotal > 0 ? oldExclTotal / dtcSeasonExclTotal : 0;
+
     return {
       p, stable,
       // 收入
@@ -306,7 +312,7 @@
       // 货品
       ssDtcTaxIncl, fwDtcTaxIncl, dtcBuyBase, distBuyBaseTotal,
       brandPayment, landing, purchaseInclLanding, closingInvBase,
-      cogs, dtcCogs, distCogs, openingInventory, inventory,
+      cogs, dtcCogs, distCogs, openingInventory, inventory, oldPctActual,
       grossProfit, grossMargin,
       // 费用
       promo, ad, platformCommission, warehouseFulfill, otherOnline,
@@ -497,7 +503,7 @@
 
     risks.push({
       level: 'note', title: '最理想口径',
-      text: '已假设零关税、零运费、零清关费，只代征增值税。真实有关税、运费、退货和展示损耗，逐岗薪酬也更高——真实只会更坏。'
+      text: '已假设零关税、零运费、零清关费，只代征增值税。真实有关税、运费、退货和展示损耗，有市场竞争力的细分岗位薪酬也更高——真实只会更坏。'
     });
 
     return risks;

@@ -28,7 +28,7 @@
       <div><span class="concl-big" id="y1-np">—</span><span class="concl-unit">万账面净利</span></div>
       <div><span class="concl-big c-red" id="y1-nc">—</span><span class="concl-unit">万净现金</span></div>
     </div>
-    <div class="concl-sub">卖 2000 万，账上勉强赚 <strong id="y1-np2">—</strong> 万，兜里现金却少了 <strong id="y1-nc2">—</strong> 万。账面那点利润，跟缺的现金比，几乎不算什么。</div>
+    <div class="concl-sub">卖 2000 万，账上反而亏 <strong id="y1-np2">—</strong> 万，兜里现金还少了 <strong id="y1-nc2">—</strong> 万。账面已经亏了，现金缺口更大，第一年就不轻松。</div>
   </div>
 
   <h2>如果连续做 5 年，会怎样</h2>
@@ -45,6 +45,7 @@
       </span>
     </div>
 
+    <p class="subtle" style="margin:10px 0 4px;">表里金额单位都是<strong>万元</strong>；门店、客户、人数是实际个数，百分比行单独标了 %。</p>
     <div class="table-scroll">
       <table class="big-table" id="bigtable"></table>
       <div class="scroll-hint" aria-hidden="true">左右滑动看 5 年 ›</div>
@@ -53,8 +54,8 @@
 
   <div class="warn">
     <span class="lbl">这张表还漏了三块，加上利润只会更难看</span>
-    <p style="margin:0 0 7px;"><strong>1. 融资利息没算。</strong>2700 多万是借来的，按 5% 年息，一年利息就上百万。模型只算了本金，没算利息。</p>
-    <p style="margin:0 0 7px;"><strong>2. 存货跌价没提。</strong>老库存放久了、卖不动，按《企业会计准则第 1 号》要按成本与可变现净值孰低计提跌价准备，直接减利润，模型没提。</p>
+    <p style="margin:0 0 7px;"><strong>1. 融资利息没算。</strong>4160 多万是借来的，按 5% 年息，一年利息就上百万。模型只算了本金，没算利息。</p>
+    <p style="margin:0 0 7px;"><strong>2. 存货跌价没提。</strong>老库存放久了、卖不动，按《企业会计准则第 1 号》，成本和实际能卖回的钱哪个低，就按哪个记账（计提跌价准备），直接减利润。库里压的货越多、售罄率越低，这笔越躲不掉，模型没提。</p>
     <p style="margin:0;"><strong>3. 损耗的进项税没转出。</strong>若是管理不善导致的损耗，按规定进口进项要转出、不能抵扣，模型按正常损耗全额抵扣了。</p>
   </div>
 
@@ -72,7 +73,7 @@
 
   <div class="warn">
     <span class="lbl">别忘了，这还是把人力算便宜了</span>
-    <p>模型用的是混合人均 21.6 万，真实逐岗薪酬更高，还有一堆没算的费用。所以真实的利润更低、现金缺口更大，这张表给的是偏乐观的下限。</p>
+    <p>模型用的是混合人均 21.6 万，有市场竞争力的细分岗位薪酬更高，还有一堆没算的费用。所以真实的利润更低、现金缺口更大，这张表给的是偏乐观的下限。</p>
   </div>
 
   <div class="pager">
@@ -94,31 +95,34 @@
 
   // 表格结构：分组行 + 指标行
   var ROWS = [
-    { grp: '① 销售额' },
+    { grp: '① 销售额（万元）' },
     { label: '含税收入', f: 'revTaxIncl' },
     { grp: '② 渠道' },
-    { label: '线下门店数', f: 'stores', int: true },
-    { label: '分销客户数', f: 'totalClients', int: true },
-    { grp: '③ 货' },
+    { label: '线下门店数（家）', f: 'stores', int: true },
+    { label: '分销客户数（个）', f: 'totalClients', int: true },
+    { grp: '③ 货（万元）' },
+    { label: '老库存占当年 DTC 销量', f: 'oldPctActual', pct: true },
     { label: '年末库存', f: 'inventory' },
-    { grp: '④ 流量成本' },
+    { grp: '④ 流量成本（万元）' },
     { label: '品牌推广', f: 'promo' },
     { label: '线上投流', f: 'ad' },
     { grp: '⑤ 人成本' },
-    { label: '总人数', f: 'headcount' },
-    { label: '人力成本', f: 'staffCost' },
-    { grp: '⑥ 现金流' },
+    { label: '总人数（人）', f: 'headcount', int: true },
+    { label: '人力成本（万元）', f: 'staffCost' },
+    { grp: '⑥ 现金流（万元）' },
     { label: '当年净现金', f: 'netCash', signed: true },
     { label: '累计净现金', f: 'cumNetCash', signed: true },
     { label: '融资需求', f: 'fundNeed' },
-    { grp: '⑦ 利润' },
+    { grp: '⑦ 利润（万元）' },
     { label: '净利润', f: 'netProfit', signed: true },
   ];
 
   function cell(v, row) {
     var cls = '';
     if (row.signed) cls = v < 0 ? 'neg' : (v > 0 ? 'pos' : '');
-    var txt = row.int ? CalcModel.fmtInt(v) : CalcModel.fmtWan(v);
+    var txt;
+    if (row.pct) txt = (v * 100).toFixed(0) + '%';
+    else txt = row.int ? CalcModel.fmtInt(v) : CalcModel.fmtWan(v);
     return '<td class="' + cls + '">' + txt + '</td>';
   }
 
